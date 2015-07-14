@@ -61,7 +61,7 @@ $(document).ready(function() {
               }
               else if(type=='event')
               {
-
+                eventSearch(respage);
               }
               else {
                 //do nothing
@@ -162,14 +162,15 @@ $(document).ready(function() {
     {
       url += "&name=" + $("#inputEName").val();
     }
+    if($("#inputENumber").val())
+    {
+      url += "&evnum=" + $("#inputENumber").val().toString();
+    }
     if($("#inputEIRN").val())
     {
       url += "&irn=" + $("#inputEIRN").val().toString();
     }
-    if($("#inputENumber").val())
-    {
-      url += "&irn=" + $("#inputENumber").val().toString();
-    }
+
     if(page > 0)
     {
       url += "&start=" + (15 * page);

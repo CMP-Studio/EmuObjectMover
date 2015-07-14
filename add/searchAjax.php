@@ -10,9 +10,10 @@ if(isset($_GET["m"]))
   $mode = $_GET["m"];
 
   switch ($mode) {
-    case 'single': searchObject();    break;
-    case 'holder': searchHolder();    break;
-    case 'group': searchGroup();    break;
+    case 'single' : searchObject();     break;
+    case 'holder' : searchHolder();     break;
+    case 'group'  : searchGroup();      break;
+    case 'event'  : searchEvent();      break;
 
     default: exit();   break;
   }
@@ -193,6 +194,62 @@ function searchGroup()
   {
     $hits = $groups->findTerms($terms);
     $result = $groups->fetch('start',$start,$number,$columns);
+
+    $result = processResult($result);
+
+    print json_encode($result);
+
+  }
+  catch (Exception $e)
+  {
+
+    var_dump($e);
+  }
+
+}
+
+function searchEvent()
+{
+  $mySession = IMuConnect();
+  $terms = new IMuTerms();
+
+  $columns =  array(
+  'SummaryData', //Get group name but call it SummaryData for consitency
+  'image.resource{height:100,source:master}'
+  );
+
+  if(isset($_GET["name"]))
+  {
+    $terms->add('EveEventTitle', trim($_GET["name"]));
+  }
+
+  if(isset($_GET["evnum"]))
+  {
+    $terms->add('EveEventNumber', trim($_GET["evnum"]));
+  }
+  if(isset($_GET["irn"]))
+  {
+    $terms->add('irn', trim($_GET["irn"]));
+  }
+
+  $start = 0;
+  if(isset($_GET["start"]))
+  {
+    $start = intval($_GET["start"]);
+  }
+  $number = 15;
+  if(isset($_GET["n"]))
+  {
+    $number = intval($_GET["n"]);
+  }
+
+
+  $events = new IMuModule('eevents', $mySession);
+
+  try
+  {
+    $hits = $events->findTerms($terms);
+    $result = $events->fetch('start',$start,$number,$columns);
 
     $result = processResult($result);
 

@@ -12,6 +12,7 @@ if(isset($_GET["m"]))
   switch ($mode) {
     case 'single': searchObject();    break;
     case 'holder': searchHolder();    break;
+    case 'group': searchGroup();    break;
 
     default: exit();   break;
   }
@@ -95,6 +96,7 @@ function searchHolder()
 
   $columns =  array(
   'SummaryData',
+  "LocLocationType",
   'image.resource{height:100,source:master}'
   );
 
@@ -159,7 +161,7 @@ function searchGroup()
   $terms = new IMuTerms();
 
   $columns =  array(
-  'SummaryData',
+  'SummaryData=GroupName', //Get group name but call it SummaryData for consitency
   'image.resource{height:100,source:master}'
   );
 

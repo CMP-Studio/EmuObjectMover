@@ -32,7 +32,7 @@ require_once '../config.php';
             <input type="text" id="inputSBarcode" class="form-control small" placeholder="Barcode" >
             <label for="inputSIRN" class="sr-only">IRN</label>
             <input type="text" id="inputSIRN" class="form-control small" placeholder="IRN" >
-            <h3 class='medium' id='N-results'> </h3>
+            <h3 class='medium N-results'> </h3>
             <button id="single-object" class="btn btn-lg btn-primary right small" type="button"><i class="fa fa-search"></i> Search</button>
             <div class="clearfix"></div>
           </form>
@@ -45,7 +45,7 @@ require_once '../config.php';
             <input type="text" id="inputHBarcode" class="form-control small" placeholder="Barcode" >
             <label for="inputHIRN" class="sr-only">IRN</label>
             <input type="text" id="inputHIRN" class="form-control small" placeholder="IRN" >
-            <h3 class='medium' id='N-results'> </h3>
+            <h3 class='medium N-results'> </h3>
             <button id='holder-search' class="btn btn-lg btn-primary right small" type="button"><i class="fa fa-search"></i> Search</button>
             <div class="clearfix"></div>
           </form>
@@ -56,7 +56,7 @@ require_once '../config.php';
               <input type="text" id="inputGName" class="form-control large" placeholder="Name" >
               <label for="inputGIRN" class="sr-only">IRN</label>
               <input type="text" id="inputGIRN" class="form-control small" placeholder="IRN" >
-              <h3 class='medium' id='N-results'> </h3>
+              <h3 class='medium N-results'> </h3>
               <button id='group-search' class="btn btn-lg btn-primary right small" type="button"><i class="fa fa-search"></i> Search</button>
               <div class="clearfix"></div>
             </form>
@@ -71,8 +71,8 @@ require_once '../config.php';
 
                <label for="inputEIRN" class="sr-only">IRN</label>
                <input type="text" id="inputEIRN" class="form-control small" placeholder="IRN" >
-               <h3 class='medium' id='N-results'> </h3>
-               <button id="event-search" class="btn btn-lg btn-primary right small" type="submit"><i class="fa fa-search"></i> Search</button>
+               <h3 class='medium N-results'> </h3>
+               <button id="event-search" class="btn btn-lg btn-primary right small" type="button"><i class="fa fa-search"></i> Search</button>
                <div class="clearfix"></div>
              </form>
             </div>

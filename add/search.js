@@ -18,6 +18,20 @@ $(document).ready(function() {
       type = 'holder';
   });
 
+  $("#group-search").click(function(){
+    $("form.search button").attr("disabled","disabled");
+      $("#result-holder").empty();
+      groupSearch(0);
+      type = 'group';
+  });
+
+  $("#event-search").click(function(){
+    $("form.search button").attr("disabled","disabled");
+      $("#result-holder").empty();
+      eventSearch(0);
+      type = 'event';
+  });
+
 
 
   $(window).scroll(function() {
@@ -40,6 +54,17 @@ $(document).ready(function() {
               else if (type=='holder')
               {
                 holderSearch(respage);
+              }
+              else if (type=='group')
+              {
+                groupSearch(respage);
+              }
+              else if(type=='event')
+              {
+
+              }
+              else {
+                //do nothing
               }
 
             }, 500);
@@ -79,7 +104,7 @@ $(document).ready(function() {
       url += "&start=" + (15 * page);
     }
 
-    APIcall(url);
+    APIsearch(url);
 
   }
 
@@ -90,7 +115,7 @@ $(document).ready(function() {
 
       if($("#inputHName").val())
       {
-        url += "&name=" + $("#inputName").val();
+        url += "&name=" + $("#inputHName").val();
       }
       if($("#inputHBarcode").val())
       {
@@ -105,7 +130,7 @@ $(document).ready(function() {
         url += "&start=" + (15 * page);
       }
 
-    APIcall(url);
+    APIsearch(url);
 
   }
 
@@ -115,28 +140,52 @@ $(document).ready(function() {
 
     if($("#inputGName").val())
     {
-      url += "&name=" + $("#inputName").val();
+      url += "&name=" + $("#inputGName").val();
     }
     if($("#inputGIRN").val())
     {
-      url += "&irn=" + $("#inputHIRN").val().toString();
+      url += "&irn=" + $("#inputGIRN").val().toString();
     }
     if(page > 0)
     {
       url += "&start=" + (15 * page);
     }
 
-    APIcall(url);
+    APIsearch(url);
+
+  }
+  function eventSearch(page)
+  {
+    var url = "searchAjax.php?m=event";
+
+    if($("#inputEName").val())
+    {
+      url += "&name=" + $("#inputEName").val();
+    }
+    if($("#inputEIRN").val())
+    {
+      url += "&irn=" + $("#inputEIRN").val().toString();
+    }
+    if($("#inputENumber").val())
+    {
+      url += "&irn=" + $("#inputENumber").val().toString();
+    }
+    if(page > 0)
+    {
+      url += "&start=" + (15 * page);
+    }
+
+    APIsearch(url);
 
   }
 
-  function APIcall(url)
+  function APIsearch(url)
   {
     console.log(url);
 
     $.getJSON(url).done(function (data) {
       $("form.search button").attr("disabled",null);
-      $('#N-results').text(data.hits + " Results");
+      $('.N-results').text(data.hits + " Results");
       console.log(data);
       dispObjects(data);
     })

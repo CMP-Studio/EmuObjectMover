@@ -71,25 +71,7 @@ function searchObject()
     $hits = $catalogue->findTerms($terms);
     $result = $catalogue->fetch('start',$start,$number,$columns);
 
-    $rows = $result->rows;
-
-    //Process images
-    foreach ($rows as $key => $r) {
-      $image = $r['image']["resource"];
-      $imgname = $image["identifier"];
-      if(!empty($imgname))
-      {
-        $imgloc = IMuImageLoc() . $imgname;
-        $imgurl = IMuImageURL() . $imgname;
-        saveImg($imgloc, $image);
-      }
-      else {
-        $imgurl = null;
-      }
-
-      $result->rows[$key]["image"] = $imgurl;
-
-    }
+    $result = processResult($result);
 
     print json_encode($result);
 
@@ -113,11 +95,10 @@ function searchHolder()
 
   $columns =  array(
   'SummaryData',
-  'LocLocationType',
   'image.resource{height:100,source:master}'
   );
 
-  //$terms->add("LocLocationType", "Holder");
+  $terms->add("LocLocationType", "Holder");
 
   //LocHolderName
   if(isset($_GET["name"]))
@@ -134,20 +115,20 @@ function searchHolder()
     $terms->add('irn', trim($_GET["irn"]));
   }
 
+  $start = 0;
+  if(isset($_GET["start"]))
+  {
+    $start = intval($_GET["start"]);
+  }
+  $number = 15;
+  if(isset($_GET["n"]))
+  {
+    $number = intval($_GET["n"]);
+  }
 
 
     $locations = new IMuModule('elocations', $mySession);
 
-    $start = 0;
-    if(isset($_GET["start"]))
-    {
-      $start = intval($_GET["start"]);
-    }
-    $number = 15;
-    if(isset($_GET["n"]))
-    {
-      $number = intval($_GET["n"]);
-    }
 
 
 
@@ -155,30 +136,8 @@ function searchHolder()
     {
       $hits = $locations->findTerms($terms);
       $result = $locations->fetch('start',$start,$number,$columns);
-      var_dump($result);
-      $rows = $result->rows;
 
-      //Process images
-      foreach ($rows as $key => $r) {
-        $image = $r['image']["resource"];
-        $imgname = $image["identifier"];
-        if(!empty($imgname))
-        {
-          $imgloc = IMuImageLoc() . $imgname;
-          $imgurl = IMuImageURL() . $imgname;
-          saveImg($imgloc, $image);
-        }
-        else {
-          $imgurl = null;
-        }
-
-
-
-        $result->rows[$key]["image"] = $imgurl;
-
-        var_dump($result->rows[$key]);
-
-      }
+      $result = processResult($result);
 
       print json_encode($result);
 
@@ -190,6 +149,87 @@ function searchHolder()
     }
 
 
+}
+
+function searchGroup()
+{
+  $mySession = IMuConnect();
+
+
+  $terms = new IMuTerms();
+
+  $columns =  array(
+  'SummaryData',
+  'image.resource{height:100,source:master}'
+  );
+
+  if(isset($_GET["name"]))
+  {
+    $terms->add('GroupName', trim($_GET["name"]));
+  }
+
+  if(isset($_GET["irn"]))
+  {
+    $terms->add('irn', trim($_GET["irn"]));
+  }
+
+  $start = 0;
+  if(isset($_GET["start"]))
+  {
+    $start = intval($_GET["start"]);
+  }
+  $number = 15;
+  if(isset($_GET["n"]))
+  {
+    $number = intval($_GET["n"]);
+  }
+
+
+  $groups = new IMuModule('egroups', $mySession);
+
+  try
+  {
+    $hits = $groups->findTerms($terms);
+    $result = $groups->fetch('start',$start,$number,$columns);
+
+    $result = processResult($result);
+
+    print json_encode($result);
+
+  }
+  catch (Exception $e)
+  {
+
+    var_dump($e);
+  }
+
+}
+
+function processResult($result)
+{
+  $rows = $result->rows;
+
+  //Process images
+  foreach ($rows as $key => $r) {
+    $image = $r['image']["resource"];
+    $imgname = $image["identifier"];
+    if(!empty($imgname))
+    {
+      $imgloc = IMuImageLoc() . $imgname;
+      $imgurl = IMuImageURL() . $imgname;
+      saveImg($imgloc, $image);
+    }
+    else {
+      $imgurl = null;
+    }
+
+
+
+    $result->rows[$key]["image"] = $imgurl;
+
+
+  }
+  return $result;
 }
 
 function saveImg($newloc, $image)
@@ -207,5 +247,7 @@ function saveImg($newloc, $image)
   }
   fclose($copy);
 }
+
+
 
  ?>

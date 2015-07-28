@@ -34,7 +34,7 @@ function searchObject()
 
   if(isset($_GET["accnum"]))
   {
-    $terms->add('TitAccessionNo', trim($_GET["accnum"]), '=' );
+    $terms->add('TitAccessionNo', trim($_GET["accnum"]) );
   }
   if(isset($_GET["title"]))
   {
@@ -274,8 +274,8 @@ function processResult($result)
     $imgname = $image["identifier"];
     if(!empty($imgname))
     {
-      $imgloc = IMuImageLoc() . $imgname;
-      $imgurl = IMuImageURL() . $imgname;
+      $imgloc = IMuTmpImageLoc() . $imgname;
+      $imgurl = IMuTmpImageURL() . $imgname;
       saveImg($imgloc, $image);
     }
     else {

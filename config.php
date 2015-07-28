@@ -43,6 +43,15 @@
   {
     return sitepath() . "emuimgs/";
   }
+  function IMuTmpImageLoc()
+  {
+    return filepath() . "tmpimgs/";
+  }
+  function IMuTmpImageURL()
+  {
+    return sitepath() . "tmpimgs/";
+  }
+
 
   function IMuPort()
   {
@@ -53,7 +62,7 @@
     cma = 40082
     */
 
-    return 40002;
+    return 40082;
   }
 
  ?>

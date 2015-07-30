@@ -1,8 +1,18 @@
+  var project = null;
+
+  function setProject(p)
+  {
+    project = p;
+  }
+
+
 $(document).ready(function() {
 
   var respage = 0;
   var type=null;
   var scrollpage = true;
+
+
 
   $("#single-object").click(function(){
     $("form.search button").attr("disabled","disabled");
@@ -31,6 +41,8 @@ $(document).ready(function() {
       eventSearch(0);
       type = 'event';
   });
+
+
 
 
 
@@ -219,9 +231,91 @@ $(document).ready(function() {
         img = "No Image";
       }
 
-      $("#result-holder").append("<tr><td>" + row + "</td><td class='center-text'>" + img + "</td><td>" + summary + "</td><td class='center-text'><button id='addItem' class='btn btn-success btn-lg' type='button' data-irn='" + irn + "'><i class='fa fa-plus'></i></button></td>");
+      $("#result-holder").append("<tr><td>" + row + "</td><td class='center-text'>" + img + "</td><td>" + summary + "</td><td class='center-text'><button id='addItem' class='btn btn-primary btn-lg addItem' type='button' data-irn='" + irn + "' data-type='" + type + "'><i class='fa fa-plus'></i></button></td>");
+      checkObject(irn);
+
+
     }
   }
+
+  function checkObject(irn)
+  {
+    var url = "./addAjax.php?action=check&project=" + project + "&irn=" + irn;
+    var btn = ".addItem[data-irn='" + irn + "']";
+    
+    $.getJSON(url).done(function (data)
+    {
+      if(data.in_project)
+      {
+        $(btn).removeClass("btn-primary");
+        $(btn).addClass("btn btn-success");
+        $(btn).children().first().removeClass('fa-plus');
+        $(btn).children().first().addClass('fa-check');
+        $(btn).prop("disabled", true );
+        }
+    });
+    addItem();
+
+  }
+
+  function addItem()
+  {
+     $(".addItem").click(function()
+  {
+    var irn = $(this).attr("data-irn");
+    var type = $(this).attr("data-type");
+    var url = "./addAjax.php?action=" + type + "&project=" + project + "&irn=" + irn;
+
+    //Change button style
+    $(this).removeClass("btn-primary");
+    $(this).addClass("btn-info");
+
+    $(this).children().first().removeClass('fa-plus');
+    $(this).children().first().addClass('fa-hourglass-half');
+    $(this).prop( "disabled", true );
+
+    var btn = this;
+
+    console.log(url);
+
+    $.getJSON(url).done(function (data)
+    {
+      console.log(data);
+      if(data.success)
+      {
+        $(btn).removeClass("btn-info");
+        $(btn).addClass("btn btn-success");
+        $(btn).children().first().removeClass('fa-hourglass-half');
+        $(btn).children().first().addClass('fa-check');
+
+      }
+      else
+      {
+        failure(btn);
+      }
+
+    }).fail(function()
+    {
+      failure(btn);
+    })
+
+  });
+  }
+
+ 
+
+  function failure(button)
+  {
+    $(button).removeClass("btn-info");
+    $(button).addClass("btn btn-danger");
+    $(button).children().first().removeClass('fa-hourglass-half');
+    $(button).children().first().addClass('fa-times');
+  }
+
+
+
+
+
 
 
 

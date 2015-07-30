@@ -8,7 +8,7 @@ require_once '../config.php';
     ?>
   </head>
   <body>
-      <?php topbar("Project Title"); ?>
+      <?php topbar("Project Title", 2); ?>
     <div id='header' class='padded relative'>
       <div>
         <h3>Due: 7/10/2015</h3>

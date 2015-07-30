@@ -26,7 +26,7 @@ function head()
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
  <!-- Font Awesome -->
- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <!-- Date picker -->
 <script type="text/javascript" src="<?php print $sitepath; ?>resources/js/bootstrap-datepicker.min.js"></script>

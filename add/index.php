@@ -8,9 +8,13 @@ require_once '../config.php';
       head();
     ?>
     <script type="text/javascript" src="search.js"></script>
+    <script type="text/javascript"> 
+    setProject(2);
+
+    </script>
   </head>
   <body>
-    <?php topbar("Project Title"); ?>
+    <?php topbar("Project Title", 2); ?>
     <div class='padded'>
       <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#single" data-toggle="tab">Single Object</a></li>

@@ -40,6 +40,9 @@ switch($action)
   case 'single':
     addSingleObject(); 
     break;
+  case 'event':
+    addEventObjects();
+    break;
 
 
   default:
@@ -71,15 +74,21 @@ function addEventObjects()
   $terms->add('irn',trim($irn));
 
   $start = 0;
-  $number = 100;
+  $number = 200;
 
   try
   {
     $hits = $events->findTerms($terms);
     $result = $events->fetch('start',$start,$number,$columns);
 
-    print json_encode($result);
 
+
+    $objects = $result->rows[0]['objects'];
+
+    foreach ($objects as $key => $o) {
+      recordObject($o['irn']);
+    }
+    success();
   } catch (exception $e) {
 
     throwError($e);
@@ -94,6 +103,8 @@ function addSingleObject()
 
   $irn = $_GET['irn'];
   recordObject($irn);
+
+  success();
 
 }
 
@@ -162,7 +173,7 @@ function recordObject($irn)
 
     createRecords($result);
 
-    success();
+    
 
   } catch (exception $e) {
 

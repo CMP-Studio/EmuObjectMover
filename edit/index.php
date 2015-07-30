@@ -6,6 +6,11 @@ require_once '../config.php';
     <?php
       head();
     ?>
+    <script type="text/javascript" src="edit.js"></script>
+        <script type="text/javascript"> 
+    setProject(2);
+
+    </script>
   </head>
   <body>
       <?php topbar("Project Title", 2); ?>
@@ -22,23 +27,17 @@ require_once '../config.php';
         <thead>
           <tr>
             <th>Image</th>
-            <th>Object Name</th>
-            <th>Type</th>
-            <th>Completed</th>
+            <th>Acc. No.</th>
+            <th>Title</th>
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>No Image</td>
-            <td>The Orchard by Gustav Klimt</td>
-            <td>Object</td>
-            <td><input id='chkDone-1' type='checkbox'></td>
-            <td>
-              <!--<button type="button" class="btn btn-info"><i class="fa fa-cog"></i></button>-->
-              <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
-            </td>
-          </tr>
+        <!-- <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button> -->
+        <tbody id='object-body'>
+
+
+              
+
         </tbody>
       </table>
     </div>

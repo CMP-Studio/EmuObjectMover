@@ -254,13 +254,13 @@ $(document).ready(function() {
         $(btn).prop("disabled", true );
         }
     });
-    addItem();
+    addItem(btn);
 
   }
 
-  function addItem()
+  function addItem(btn)
   {
-     $(".addItem").click(function()
+     $(btn).click(function()
   {
     var irn = $(this).attr("data-irn");
     var type = $(this).attr("data-type");

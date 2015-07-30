@@ -127,6 +127,16 @@ border-radius: 0px;
   bottom: 0;
 }
 
+
+#object-body img
+{
+  min-height: 1vh;
+  min-width: 1vw;
+  
+  max-height: 10vh;
+  max-width: 10vw;
+}
+
 /* Add page */
 #search-content
 {

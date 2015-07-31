@@ -215,6 +215,8 @@ $(document).ready(function() {
     {
       return;
     }
+    
+    
     var len = objects.rows.length;
     for(var i = 0; i < len; i++ ) {
       var pic = objects.rows[i].image;

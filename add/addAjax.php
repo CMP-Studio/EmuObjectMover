@@ -2,7 +2,7 @@
 
 //Test
 //http://it-svr-emu03/mover/add/addAjax.php?irn=90991
-//error_reporting(0);
+error_reporting(0);
 
 require_once "../config.php";
 require_once filepath() . "app/imu.php";
@@ -43,7 +43,12 @@ switch($action)
   case 'event':
     addEventObjects();
     break;
-
+  case 'group':
+    addGroupObjects();
+    break;
+  case 'holder':
+    addHolder();
+    break;
 
   default:
     $errors = array("source"=>"main","error"=>"Action not valid, exiting");
@@ -51,13 +56,138 @@ switch($action)
 
 }
 
+//Holders are unique as they are not actually recording the items within them like groups or events but rather the holder itself.  It can therefore record all the info in this main function
+function addHolder()
+{
+  $irn = $_GET['irn'];
+  $mySession = IMuConnect();
+  $terms = new IMuTerms();
+  $terms->add('irn',trim($irn));
 
+  $locations = new IMuModule('elocations', $mySession);
+
+  $columns = array
+  (
+    'irn',
+    'Title=LocHolderName',
+    'Location=LocHolderLocationRef.(LocLocationName,LocBarcode)',
+    'Barcode=LocBarcode',
+    'eLength=LocExtImpLength',
+    'eWidth=LocExtImpWidth',
+    'eHeight=LocExtImpHeight',
+    'iLength=LocIntImpLength',
+    'iWidth=LocIntImpWidth',
+    'iHeight=LocIntImpHeight',
+    'Children=<ecatalogue:LocCurrentLocationRef>.(irn, SummaryData, Location=LocCurrentLocationRef.(LocLocationName, LocBarcode), TitBarcode)'
+  );
+
+  $start = 0;
+  $number = 200;
+
+    try
+  {
+    $hits = $locations->findTerms($terms);
+    $result = $locations->fetch('start',$start,$number,$columns);
+
+    $record = $result->rows[0];
+
+    //We will create an object to replicate the structure of the other records
+    $object = array();
+    //this is a holder
+    $object['is_holder'] = true;
+    //Children is the same so we can just copy them over
+    $object['Children'] = $record['Children'];
+    //No creators so just make an empty array
+    $object['Creator'] = array();
+    //No year
+    $object['Year'] = null;
+    //None of these
+    $object['image'] = null;
+    $object["AccNo"] = null;
+    //Same
+    $object['Barcode'] = $record['Barcode'];
+    $object['Title'] = $record['Title'];
+    $object['irn'] =   $record['irn'];
+    $object['Location'] = $record['Location'];
+
+
+    //Now we need to create the measurements
+    $object['Measurements'] = array();
+
+    if($record['iHeight'] || $record['iWidth'] || $record['iDepth'])
+    {
+      $int = array();
+      $int['Type'] = 'Internal Measurement';
+      $int['Width'] = $record['iWidth'];
+      $int['Height'] = $record['iHeight'];
+      $int['Depth'] = $record['iDepth'];
+
+      array_push($object['Measurements'], $int);
+    }
+
+    if($record['eHeight'] || $record['eWidth'] || $record['eDepth'])
+    {
+      $ext = array();
+      $ext['Type'] = 'External Measurement';
+      $ext['Width'] = $record['eWidth'];
+      $ext['Height'] = $record['eHeight'];
+      $ext['Depth'] = $record['eDepth'];
+
+      array_push($object['Measurements'], $ext);
+    }
+
+    createRecords($object);
+
+    success(array($object));
+  } catch (Exception $e) {
+    var_dump($e);
+    throwError(array("source"=>"IMu"));
+
+  }
+
+
+
+}
+
+function addGroupObjects()
+{
+  $irn = $_GET['irn'];
+  $mySession = IMuConnect();
+  $terms = new IMuTerms();
+  $terms->add('irn',trim($irn));
+
+  $groups = new IMuModule('egroups', $mySession);
+  $columns = array(
+    'objects=Keys_tab'
+  );
+
+  $start = 0;
+  $number = 200;
+   try
+  {
+    $hits = $groups->findTerms($terms);
+    $result = $groups->fetch('start',$start,$number,$columns);
+
+    $objects = $result->rows[0]['objects'];
+
+    $records = array();
+    foreach ($objects as $key => $o) {
+       $rec = recordObject($o);
+       array_push($records, $rec);
+    }
+    success($records);
+  } catch (Exception $e) {
+    var_dump($e);
+    throwError(array("source"=>"IMu"));
+
+  }
+
+}
 
 
 
 function addEventObjects()
 {
-  if(!isset($_GET['irn'])) return null;
 
   $irn = $_GET['irn'];
 
@@ -85,11 +215,13 @@ function addEventObjects()
 
     $objects = $result->rows[0]['objects'];
 
+    $records = array();
     foreach ($objects as $key => $o) {
-      recordObject($o['irn']);
+      $rec = recordObject($o['irn']);
+      array_push($records, $rec);
     }
-    success();
-  } catch (exception $e) {
+    success($records);
+  } catch (Exception $e) {
 
     throwError($e);
 
@@ -102,9 +234,10 @@ function addSingleObject()
   if(!isset($_GET['irn'])) return null;
 
   $irn = $_GET['irn'];
-  recordObject($irn);
-
-  success();
+  $records = array();
+  $record = recordObject($irn);
+  array_push($records, $record);
+  success($records);
 
 }
 
@@ -173,19 +306,19 @@ function recordObject($irn)
 
     createRecords($result);
 
+    return $result;
+
     
 
-  } catch (exception $e) {
+  } catch (Exception $e) {
 
     throwError($e);
 
   }
+  return null;
 }
 
-function recordHolder($irn)
-{
 
-}
 
 function formatResults($result)
 {
@@ -196,6 +329,8 @@ function formatResults($result)
 
     foreach ($rows as $key => $r)
    {
+      //Is not a holder
+      $result->rows[$key]['is_holder'] = false;
 
      //Fix creators
       $cs = $r["Creator"];
@@ -283,8 +418,10 @@ function createRecords($record)
     {
       throwError(getSQLerrors());
     }
-    return true;
+    return $record;
   }
+
+  return null;
 
 }
 
@@ -293,15 +430,15 @@ function deleteExistingRecords($record)
 {
     $result = true;
     $project = $_GET['project'];
-    $query = "DELETE FROM objects WHERE irn = " . sqlSafe($record['irn']);
+    $query = "DELETE FROM objects WHERE irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
-    $query = "DELETE FROM children WHERE parent_irn = " . sqlSafe($record['irn']);
+    $query = "DELETE FROM children WHERE parent_irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
-    $query = "DELETE FROM creators WHERE object_irn = " . sqlSafe($record['irn']);
+    $query = "DELETE FROM creators WHERE object_irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
-    $query = "DELETE FROM measurements WHERE object_irn = " . sqlSafe($record['irn']);
+    $query = "DELETE FROM measurements WHERE object_irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
-    $query = "DELETE FROM objectProject WHERE object_irn = " . sqlSafe($record['irn']) . " AND project_id = " . sqlSafe($project);
+    $query = "DELETE FROM objectProject WHERE object_irn = " . sqlSafe($record['irn']) . " AND project_id = " . sqlSafe($project) . " AND object_holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
 
     return $result;
@@ -309,9 +446,9 @@ function deleteExistingRecords($record)
 
 function insertRecord($record)
 {
-  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, location_name, location_barcode, image_url) VALUES ("
+  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, location_name, location_barcode, image_url, holder) VALUES ("
   . sqlSafe($record['irn']) . "," . sqlSafe($record['AccNo']) . "," . sqlSafe($record["Barcode"]) . "," . sqlSafe($record["Title"]) . "," . sqlSafe($record["Year"]) .
-  "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . ")";
+  "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . "," . sqlSafe($record['is_holder']) . ")";
 
   $result = writeQuery($query);
 
@@ -324,9 +461,9 @@ function insertChildRecords($record)
   $result = true;
   foreach ($children as $key => $ch) 
   {
-      $query = "INSERT INTO children (irn, parent_irn, barcode, summary, location_name, location_barcode) VALUES (" .
+      $query = "INSERT INTO children (irn, parent_irn, barcode, summary, location_name, location_barcode, holder) VALUES (" .
         sqlSafe($ch["irn"]) . "," . sqlSafe($record["irn"]) . "," . sqlSafe($ch["TitBarcode"]) ."," . sqlSafe($ch["SummaryData"])
-         . "," . sqlSafe($ch["Location"]["LocLocationName"]) . "," . sqlSafe($ch["Location"]["LocBarcode"]) . ")";
+         . "," . sqlSafe($ch["Location"]["LocLocationName"]) . "," . sqlSafe($ch["Location"]["LocBarcode"]) . "," . sqlSafe($record['is_holder']) . ")";
         
         $result = $result && writeQuery($query);
   } 
@@ -343,9 +480,9 @@ function insertMeasurements($record)
     $h = tryHash($m, "Height");
     $d = tryHash($m, "Depth");
 
-    $query = "INSERT INTO `emuProjects`.`measurements` (`object_irn`, `type`, `width`, `height`, `depth`) VALUES(" .
+    $query = "INSERT INTO `emuProjects`.`measurements` (`object_irn`, `type`, `width`, `height`, `depth`, holder) VALUES(" .
       sqlSafe($record["irn"]) . "," . sqlSafe($type) . "," . sqlSafe($w) . "," . sqlSafe($h) .
-      "," . sqlSafe($d) . ")";
+      "," . sqlSafe($d) . "," . sqlSafe($record['is_holder']) . ")";
       writeQuery($query);
   }
 }
@@ -359,8 +496,8 @@ function insertCreators($record)
       $name = tryHash($c, "Name");
       $role = tryHash($c, "Role");
 
-      $query = "INSERT INTO `emuProjects`.`creators` (`object_irn`, `name`, `role`) VALUES ( ".
-        sqlSafe($irn) . "," . sqlSafe($name) . "," . sqlSafe($role) . ")";
+      $query = "INSERT INTO `emuProjects`.`creators` (`object_irn`, `name`, `role`, holder) VALUES ( ".
+        sqlSafe($irn) . "," . sqlSafe($name) . "," . sqlSafe($role)  . "," . sqlSafe($record['is_holder']) . ")";
 
       writeQuery($query);
   }
@@ -370,8 +507,8 @@ function attachObject($record)
   $project = $_GET['project'];
   $object = $record['irn'];
 
-  $query = "INSERT INTO `emuProjects`.`objectProject` (`project_id`, `object_irn`) VALUES (" .
-    sqlSafe($project) . "," . sqlSafe($object) . ")";
+  $query = "INSERT INTO `emuProjects`.`objectProject` (`project_id`, `object_irn`, object_holder) VALUES (" .
+    sqlSafe($project) . "," . sqlSafe($object) . "," . sqlSafe($record['is_holder']) . ")";
 
   writeQuery($query);
 
@@ -390,9 +527,9 @@ function throwError($errors)
   print json_encode($response);
   exit(-1);
 }
-function success()
+function success($objects = null)
 {
-  $response = array('success' => true);
+  $response = array('success' => true, 'objects' => $objects);
   print json_encode($response);
   exit(0);
 }

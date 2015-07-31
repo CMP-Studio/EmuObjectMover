@@ -8,7 +8,7 @@ body {
   margin-bottom: 2vmin;
 }
 .form {
-  max-width: 60vw;
+  max-width: 80vw;
   padding: 15px;
   margin: 0 auto;
 }
@@ -40,28 +40,28 @@ body {
   position: relative;
 }
 
-.small
+.small-f
 {
   width: 23%;
   float: left;
   margin-left: 1%;
   margin-right: 1%;
 }
-.medium
+.medium-f
 {
   width: 48%;
   float: left;
   margin-left: 1%;
   margin-right: 1%;
 }
-.large
+.large-f
 {
   width: 73%;
   float: left;
   margin-left: 1%;
   margin-right: 1%;
 }
-.full
+.full-f
 {
   width: 98%;
   float: left;
@@ -132,7 +132,7 @@ border-radius: 0px;
 {
   min-height: 1vh;
   min-width: 1vw;
-  
+
   max-height: 10vh;
   max-width: 10vw;
 }

@@ -166,6 +166,7 @@ function searchGroup()
   'image.resource{height:100,source:master}'
   );
 
+  $terms->add('Module','ecatalogue');
   if(isset($_GET["name"]))
   {
     $terms->add('GroupName', trim($_GET["name"]));

@@ -45,7 +45,7 @@ function getItems()
 {
 	$project = $_GET['project'];
 	$query = "SELECT o.irn, o.image_url,  o.accession_no, o.title FROM objectProject op 
-	 LEFT JOIN objects o ON (op.object_irn = o.irn)
+	 LEFT JOIN objects o ON (op.object_irn = o.irn AND op.object_holder = o.holder)
 	 WHERE op.project_id = " . sqlSafe($project);
 
 	$res = readQuery($query);

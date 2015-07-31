@@ -75,7 +75,8 @@ require_once '../config.php';
 
                <label for="inputEIRN" class="sr-only">IRN</label>
                <input type="text" id="inputEIRN" class="form-control small" placeholder="IRN" >
-               <h3 class='medium N-results'> </h3>
+               <h3 class='small N-results'> </h3>
+               <p class='medium'><b>Note:</b> Large events will take a long time to process but you can leave this page and it will still complete</p>
                <button id="event-search" class="btn btn-lg btn-primary right small" type="button"><i class="fa fa-search"></i> Search</button>
                <div class="clearfix"></div>
              </form>

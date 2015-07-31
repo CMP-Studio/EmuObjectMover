@@ -72,6 +72,7 @@ function addEventObjects()
   );
 
   $terms->add('irn',trim($irn));
+  $terms->add('AssParentObjectRef', ''); //No children
 
   $start = 0;
   $number = 200;
@@ -81,13 +82,13 @@ function addEventObjects()
     $hits = $events->findTerms($terms);
     $result = $events->fetch('start',$start,$number,$columns);
 
-
-
     $objects = $result->rows[0]['objects'];
 
-    foreach ($objects as $key => $o) {
-      recordObject($o['irn']);
-    }
+
+    recordObjects($objects);
+
+
+
     success();
   } catch (exception $e) {
 
@@ -102,7 +103,7 @@ function addSingleObject()
   if(!isset($_GET['irn'])) return null;
 
   $irn = $_GET['irn'];
-  recordObject($irn);
+  recordObjects(array(array('irn'=>$irn)));
 
   success();
 
@@ -134,12 +135,27 @@ function checkInProject()
 
 }
 
-function recordObject($irn)
+
+
+function recordObjects($irns)
 {
 
   $mySession = IMuConnect();
 
-  $terms = new IMuTerms();
+  
+
+  $irnlist = array();
+
+  foreach ($irns as $key => $i) 
+  {
+
+    $irnlist[] = array('irn', $i['irn']);
+  }
+
+
+    $terms = array('or', $irnlist);
+
+  
 
   $cat = new IMuModule('ecatalogue', $mySession);
 
@@ -157,10 +173,9 @@ function recordObject($irn)
     'W=MesTotWidthInchFrac_tab',
     'D=MesTotDepthInchFrac_tab',
     'Barcode=TitBarcode',
-    'image.resource{height:100,source:thumbnail,source:master}'
+    'image.resource{height:300,source:master,source:thumbnail}'
   );
-
-  $terms->add('irn',trim($irn));
+  
 
   $start = 0;
   $number = 100;
@@ -169,11 +184,14 @@ function recordObject($irn)
   {
     $hits = $cat->findTerms($terms);
     $result = $cat->fetch('start',$start,$number,$columns);
-    $result = formatResults($result);
 
-    createRecords($result);
+    $rows = $result->rows;
 
-    
+      foreach ($rows as $key => $r)
+      {
+        $record = formatResults($r);
+        createRecords($record);
+      }
 
   } catch (exception $e) {
 
@@ -190,76 +208,65 @@ function recordHolder($irn)
 function formatResults($result)
 {
 
-  $rows = $result->rows;
 
+   //Fix creators
+    $cs = $result["Creator"];
+    $rs = $result["Role"];
 
-
-    foreach ($rows as $key => $r)
-   {
-
-     //Fix creators
-      $cs = $r["Creator"];
-      $rs = $r["Role"];
-
-      $creator = array();
-      foreach ($cs as $k2 => $c)
+    $creator = array();
+    foreach ($cs as $k2 => $c)
+    {
+      $creator[$k2]['Name'] = $c['Name'];
+      if(isset($rs[$k2]))
       {
-        $creator[$k2]['Name'] = $c['Name'];
-        if(isset($rs[$k2]))
-        {
-          $creator[$k2]['Role'] = $rs[$k2];
-        }
-        else
-        {
-          $creator[$k2]['Role'] = '';
-        }
-      }
-
-      $result->rows[$key]["Creator"] = $creator;
-      unset($result->rows[$key]['Role']);
-
-      //Fix measurements
-      $ms = $r['MesType'];
-      $hs = $r["H"];
-      $ws = $r["W"];
-      $ds = $r["D"];
-
-      $measurments = array();
-      foreach ($ms as $k3 => $m)
-      {
-        $measurments[$k3]['Type'] = $m;
-        $measurments[$k3]["Width"] = tryHash($ws, $k3);
-        $measurments[$k3]["Height"] = tryHash($hs, $k3);
-        $measurments[$k3]["Depth"] = tryHash($ds, $k3);
-
-      }
-
-      $result->rows[$key]['Measurements'] = $measurments;
-      unset($result->rows[$key]['MesType']);
-      unset($result->rows[$key]['W']);
-      unset($result->rows[$key]['H']);
-      unset($result->rows[$key]['D']);
-
-      //Fix image
-      $image = $r['image']["resource"];
-      $imgname = $r['image']["resource"]['identifier'];
-
-      if($imgname)
-      {
-        $imgloc = IMuImageLoc() . $imgname;
-        saveImg($imgloc, $image);
-        $result->rows[$key]['image'] = IMuImageURL() . $imgname;
+        $creator[$k2]['Role'] = $rs[$k2];
       }
       else
       {
-        $result->rows[$key]['image'] = null;
+        $creator[$k2]['Role'] = '';
       }
-      return $result->rows[$key];
+    }
 
+    $result["Creator"] = $creator;
+    unset($result['Role']);
 
-   }
+    //Fix measurements
+    $ms = $result['MesType'];
+    $hs = $result["H"];
+    $ws = $result["W"];
+    $ds = $result["D"];
 
-   return null;
+    $measurments = array();
+    foreach ($ms as $k3 => $m)
+    {
+      $measurments[$k3]['Type'] = $m;
+      $measurments[$k3]["Width"] = tryHash($ws, $k3);
+      $measurments[$k3]["Height"] = tryHash($hs, $k3);
+      $measurments[$k3]["Depth"] = tryHash($ds, $k3);
+
+    }
+
+    $result['Measurements'] = $measurments;
+    unset($result['MesType']);
+    unset($result['W']);
+    unset($result['H']);
+    unset($result['D']);
+
+    //Fix image
+    $image = $result['image']["resource"];
+    $imgname = $result['image']["resource"]['identifier'];
+
+    if($imgname)
+    {
+      $imgloc = IMuImageLoc() . $imgname;
+      saveImg($imgloc, $image);
+      $result['image'] = IMuImageURL() . $imgname;
+    }
+    else
+    {
+      $result['image'] = null;
+    }
+    return $result;
 }
 
 function createRecords($record)

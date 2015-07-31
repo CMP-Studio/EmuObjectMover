@@ -157,7 +157,7 @@ function recordObject($irn)
     'W=MesTotWidthInchFrac_tab',
     'D=MesTotDepthInchFrac_tab',
     'Barcode=TitBarcode',
-    'image.resource{height:100,source:thumbnail,source:master}'
+    'image.resource{height:300,source:master,source:thumbnail}'
   );
 
   $terms->add('irn',trim($irn));

@@ -55,7 +55,7 @@ $(document).ready(function()
 			$.getJSON(url).done( function(data)
 			{
 				console.log(data);
-				$(this).parent().parent().remove();
+				$(".delBtn[data-irn=" + irn +"]").parent().parent().remove();
 			});
 
 		});

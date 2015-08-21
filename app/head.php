@@ -8,13 +8,17 @@ function head()
   $sitepath = sitepath();
  ?>
 
-<meta charset="utf-8">
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  <meta http-equiv="X-UA-Compatible" content="IE=edge">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 <!-- jQuery -->
  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+ <!-- jQuery UI -->
+ <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
  <!-- Latest compiled and minified CSS -->
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">

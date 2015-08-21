@@ -2,14 +2,14 @@
 require_once __DIR__ . "/config/sqlConfig.php";
 
 $errors = array();
+$lastID = null;
 
 /* Insert / Update / Delete -  returns true on success or false on failure */
 function writeQuery($query)
 {
+	global $lastID;
 
 	$sql = getSQL();
-
-
 
 	if($sql->connect_errno)
 	{
@@ -19,6 +19,10 @@ function writeQuery($query)
 
 	if($sql->query($query))
 	{
+		if(isset($sql->insert_id))
+		{
+			$lastID = $sql->insert_id;
+		}
 		return true;
 	}
 
@@ -51,6 +55,7 @@ function readQuery($query)
 function sqlSafe($data)
 {
 	$sql = getSQL();
+	if(!isset($data)) return 'NULL';
 	return "'" . $sql->real_escape_string($data) . "'"; 
 }
 
@@ -97,5 +102,22 @@ function clearSQLerrors()
 	global $errors;
 	$errors = array();
 }
+function getInsertID()
+{
+	global $lastID;
+	return $lastID;
+}
+
+function tryRetrieve($array, $key)
+{
+	if(isset($array[$key]))
+	{
+		return $array[$key];
+	}
+	else
+	{
+		return null;
+	}
+} 
 
 ?>

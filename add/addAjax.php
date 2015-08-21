@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 //Test
 //http://it-svr-emu03/mover/add/addAjax.php?irn=90991
 error_reporting(0);
@@ -17,7 +17,7 @@ if(!isset($_GET['action']))
   $errors = array("source"=>"main","error"=>"Action not set, exiting");
   throwError($errors);
 }
-if(!isset($_GET['project']))
+if(!isset($_SESSION['project']))
 {
   $errors = array("source"=>"main","error"=>"Project not set, exiting");
   throwError($errors);
@@ -78,7 +78,7 @@ function addHolder()
     'iLength=LocIntImpLength',
     'iWidth=LocIntImpWidth',
     'iHeight=LocIntImpHeight',
-    'Children=<ecatalogue:LocCurrentLocationRef>.(irn, SummaryData, Location=LocCurrentLocationRef.(LocLocationName, LocBarcode), TitBarcode)'
+    'Children=<ecatalogue:AssParentObjectRef>.(irn, AccNo=TitAccessionNo, Title=TitMainTitle, Location=LocCurrentLocationRef.(LocLocationName, LocBarcode), TitBarcode)'
   );
 
   $start = 0;
@@ -104,6 +104,7 @@ function addHolder()
     //None of these
     $object['image'] = null;
     $object["AccNo"] = null;
+    $object['Medium'] = null;
     //Same
     $object['Barcode'] = $record['Barcode'];
     $object['Title'] = $record['Title'];
@@ -244,7 +245,7 @@ function addSingleObject()
 function checkInProject()
 {
   $irn = $_GET['irn'];
-  $project = $_GET['project'];
+  $project = $_SESSION['project'];
 
   $query = "SELECT * FROM objectProject WHERE object_irn = " . sqlSafe($irn) . " AND project_id = " . sqlSafe($project);
   if(hasSQLerrors())
@@ -281,16 +282,17 @@ function recordObject($irn)
     'Creator=CreCreatorRef_tab.(Name=NamFullName)',
     'Role=CreRole_tab',
     'AccNo=TitAccessionNo',
+    'Medium=PhyMediumComments',
     'Title=TitMainTitle',
     'Year=CreDateCreated',
     'Location=LocCurrentLocationRef.(LocLocationName,LocBarcode)',
-    'Children=<ecatalogue:AssParentObjectRef>.(irn, SummaryData, Location=LocCurrentLocationRef.(LocLocationName, LocBarcode), TitBarcode)',
+    'Children=<ecatalogue:AssParentObjectRef>.(irn, AccNo=TitAccessionNo, Title=TitMainTitle, Location=LocCurrentLocationRef.(LocLocationName, LocBarcode), TitBarcode)',
     'MesType=MesMeasurementType_tab',
     'H=MesTotalInchFrac_tab',
     'W=MesTotWidthInchFrac_tab',
     'D=MesTotDepthInchFrac_tab',
     'Barcode=TitBarcode',
-    'image.resource{height:300,source:master,source:thumbnail}'
+    'image.resource{height:300,source:master}'
   );
 
   $terms->add('irn',trim($irn));
@@ -429,7 +431,7 @@ function createRecords($record)
 function deleteExistingRecords($record)
 {
     $result = true;
-    $project = $_GET['project'];
+    $project = $_SESSION['project'];
     $query = "DELETE FROM objects WHERE irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
     $result = $result && writeQuery($query);
     $query = "DELETE FROM children WHERE parent_irn = " . sqlSafe($record['irn']) . " AND holder = " . sqlSafe($record['is_holder']);
@@ -446,9 +448,9 @@ function deleteExistingRecords($record)
 
 function insertRecord($record)
 {
-  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, location_name, location_barcode, image_url, holder) VALUES ("
+  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, medium, location_name, location_barcode, image_url, holder) VALUES ("
   . sqlSafe($record['irn']) . "," . sqlSafe($record['AccNo']) . "," . sqlSafe($record["Barcode"]) . "," . sqlSafe($record["Title"]) . "," . sqlSafe($record["Year"]) .
-  "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . "," . sqlSafe($record['is_holder']) . ")";
+  "," . sqlSafe($record['Medium']) . "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . "," . sqlSafe($record['is_holder']) . ")";
 
   $result = writeQuery($query);
 
@@ -461,9 +463,9 @@ function insertChildRecords($record)
   $result = true;
   foreach ($children as $key => $ch) 
   {
-      $query = "INSERT INTO children (irn, parent_irn, barcode, summary, location_name, location_barcode, holder) VALUES (" .
-        sqlSafe($ch["irn"]) . "," . sqlSafe($record["irn"]) . "," . sqlSafe($ch["TitBarcode"]) ."," . sqlSafe($ch["SummaryData"])
-         . "," . sqlSafe($ch["Location"]["LocLocationName"]) . "," . sqlSafe($ch["Location"]["LocBarcode"]) . "," . sqlSafe($record['is_holder']) . ")";
+      $query = "INSERT INTO children (irn, parent_irn, barcode, title, accession_no, location_name, location_barcode, holder) VALUES (" .
+        sqlSafe($ch["irn"]) . "," . sqlSafe($record["irn"]) . "," . sqlSafe($ch["TitBarcode"]) ."," . sqlSafe($ch["Title"]) . "," . sqlSafe($ch['AccNo']) . "," .
+        sqlSafe($ch["Location"]["LocLocationName"]) . "," . sqlSafe($ch["Location"]["LocBarcode"]) . "," . sqlSafe($record['is_holder']) . ")";
         
         $result = $result && writeQuery($query);
   } 
@@ -504,7 +506,7 @@ function insertCreators($record)
 }
 function attachObject($record)
 {
-  $project = $_GET['project'];
+  $project = $_SESSION['project'];
   $object = $record['irn'];
 
   $query = "INSERT INTO `emuProjects`.`objectProject` (`project_id`, `object_irn`, object_holder) VALUES (" .

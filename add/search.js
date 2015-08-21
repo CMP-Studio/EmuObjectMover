@@ -1,10 +1,3 @@
-  var project = null;
-
-  function setProject(p)
-  {
-    project = p;
-  }
-
 
 $(document).ready(function() {
 
@@ -242,7 +235,7 @@ $(document).ready(function() {
 
   function checkObject(irn)
   {
-    var url = "./addAjax.php?action=check&project=" + project + "&irn=" + irn;
+    var url = "./addAjax.php?action=check&&irn=" + irn;
     var btn = ".addItem[data-irn='" + irn + "']";
     
     $.getJSON(url).done(function (data)
@@ -266,7 +259,7 @@ $(document).ready(function() {
   {
     var irn = $(this).attr("data-irn");
     var type = $(this).attr("data-type");
-    var url = "./addAjax.php?action=" + type + "&project=" + project + "&irn=" + irn;
+    var url = "./addAjax.php?action=" + type +  "&irn=" + irn;
 
     //Change button style
     $(this).removeClass("btn-primary");

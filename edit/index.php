@@ -1,5 +1,34 @@
 <?php
+session_start();
 require_once '../config.php';
+require_once filepath() . "app/project.php";
+
+
+if(isset($_POST['project']))
+{
+  //Existing project - from Home
+  $project = $_POST['project'];
+
+  $_SESSION['project'] = $project;
+
+  $info = getProjectInfo();
+}
+else if(isset($_SESSION['project']))
+{
+  //Project set in session
+  $info = getProjectInfo();
+}
+else if(isset($_POST['newProj']))
+{
+  //Create new project
+  $info = createProject();
+}
+else
+{
+  //Send to home
+  exit();
+  
+}
 ?>
 <html>
   <head>
@@ -7,20 +36,22 @@ require_once '../config.php';
       head();
     ?>
     <script type="text/javascript" src="edit.js"></script>
-        <script type="text/javascript"> 
-    setProject(2);
-
-    </script>
   </head>
   <body>
-      <?php topbar("Project Title", 2); ?>
-    <div id='header' class='padded relative'>
-      <div>
-        <h3>Due: 7/10/2015</h3>
-      </div>
+      <?php topbar($info['title'], true); ?>
+    <div id='header' class='padded relative clearfix'>
+      <?php 
+      
+      if($info['duedate'] != '0000-00-00 00:00:00') { ?>
+        <h2 class="left">Due: <?php print date('M j, Y', strtotime($info["duedate"]));?></h2>
+        <?php } 
+          $hash = $info['hash'];
+          $plink = $_SERVER['SERVER_NAME'] . sitepath() . 'view?p=' . $hash;
+        ?>
+        <h2 class='left'>Link: <a href='<?php print 'http://' . $plink; ?>'><?php print $plink; ?></a></h2>
         <form action='<?php print sitepath(); ?>add'>
           <button id='btnAdd' type="submit" class="btn btn-success">Add Objects</button>
-        </div>
+        </form>
     </div>
     <div id='objects'>
       <table class="table table-striped">

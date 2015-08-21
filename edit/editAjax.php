@@ -1,6 +1,8 @@
 <?php
+session_start();
 require_once "../config.php";
 require_once filepath() . "app/sql.php";
+
 
 /* Handles calls from the edit page.
 
@@ -16,11 +18,12 @@ if(!isset($_GET['action']))
   $errors = array("source"=>"main","error"=>"Action not set, exiting");
   throwError($errors);
 }
-if(!isset($_GET['project']))
+if(!isset($_SESSION['project']))
 {
-  $errors = array("source"=>"main","error"=>"Project not set, exiting");
+  $errors = array("source"=>"main","error"=>"Session not set, exiting");
   throwError($errors);
 }
+
 
 $action = $_GET['action'];
 
@@ -43,7 +46,7 @@ switch($action)
 
 function getItems()
 {
-	$project = $_GET['project'];
+	$project = $_SESSION['project'];
 	$query = "SELECT o.irn, o.image_url,  o.accession_no, o.title FROM objectProject op 
 	 LEFT JOIN objects o ON (op.object_irn = o.irn AND op.object_holder = o.holder)
 	 WHERE op.project_id = " . sqlSafe($project);
@@ -75,7 +78,7 @@ function delItem()
 	  throwError($errors);
 	}
 
-	$project = $_GET['project'];
+	$project = $_SESSION['project'];
 	$irn = $_GET['irn'];
 
 	$query = "DELETE FROM objectProject WHERE object_irn = " . sqlSafe($irn) . " AND project_id = " . sqlSafe($project);

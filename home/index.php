@@ -1,17 +1,28 @@
 <?php
+  session_start();
   require_once "../config.php";
+  require_once "projects.php";
+
+
+
+  if(isset($_POST["projectToDelete"]))
+  {
+    deleteProject($_POST["projectToDelete"]);
+  }
+
 ?>
 
 <html>
   <head>
     <?php head(); ?>
+    <script type="text/javascript" src="project.js"></script>
   </head>
   <body>
     <?php topbar() ?>
     <div id='main'>
       <div class="padded">
         <form action="../create/">
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Create New</button>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Create a Project</button>
         </form>
       </div>
       <div id="listing">
@@ -19,21 +30,54 @@
           <thead>
             <tr>
               <th>Project Name</th>
+              <th>Notes</th>
               <th>Objects</th>
               <th>Due</th>
               <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <!-- Replace with generated code -->
-              <td>Test</td>
-              <td>4</td>
-              <td>1/1/16</td>
-              <td>
-                <button type="button" class="btn btn-info"><i class="fa fa-cog"></i></button>
-              </td>
-              <!-- End - Replace with generated code -->
+          <tbody id='projects'>
+            <?php
+              $projects = getProjects(1);
+              //var_dump($projects);
+              
+
+              foreach ($projects as $key => $p) {
+                print "<tr>\n";
+                print "\t<td>" . $p["title"] . "</td>\n";
+                print "\t<td>" . $p["notes"] . "</td>\n";
+                if(!isset($p["nObjects"]))
+                {
+                  print "\t<td>0</td>\n";
+                }
+                else
+                {
+                  print "\t<td>" . $p["nObjects"] . "</td>\n";
+                }
+                if($p['duedate'] != '0000-00-00 00:00:00') {
+                  print "\t<td>" . date('M j, Y', strtotime($p["duedate"])) . "</td>\n";
+                }
+                else
+                {
+                  print "\t<td>None</td>\n";
+                }
+                ?>
+                <td>
+                  <form action='../edit/' method="POST">
+                      <input type='hidden' name='project' value='<?php print $p['id']; ?>'/>
+                      <button type="submit" class="btn btn-large btn-info"><i class="fa fa-pencil"></i></button>
+                  </form>
+                </td>
+                <td>
+                  <button class="btn btn-large btn-danger delete-project" data-target="<?php print $p['id']; ?>"><i class="fa fa-trash-o"></i></button>
+                </td>
+                <?php
+                print "</tr>\n";
+              }
+
+              
+            ?>
           </tbody>
         </table>
       </div>

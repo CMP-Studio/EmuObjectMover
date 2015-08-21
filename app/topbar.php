@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../config.php";
 
-function topbar($title = "Emu mover", $project = 0)
+function topbar($title = "Emu mover", $project = false)
 {
 
    ?>
@@ -20,14 +20,14 @@ function topbar($title = "Emu mover", $project = 0)
     <!-- Primary nav bar -->
     <div class="collapse navbar-collapse" id="main-nav">
       <ul class="nav navbar-nav">
-        <li><a class="navbar-brand" href="<?php print sitepath(); ?>home"><i class="fa fa-home"></i></a></li>
+        <li><a class="navbar-brand" href="<?php print sitepath(); ?>home"><i class="fa fa-home" alt="Home"></i></a></li>
       </ul >
       <ul class="nav navbar-nav navbar-center">
           <li><h3 id='topbar-title'>
           <?php 
           if($project)
           {
-            print "<a href='" . sitepath() . "edit?p=" . $project . "'>" . $title . "</a>";
+            print "<a href='" . sitepath() . "edit'>" . $title . "</a>";
           }
           else
           {
@@ -35,9 +35,11 @@ function topbar($title = "Emu mover", $project = 0)
           }?>
           </h3></li>
       </ul>
+      <!--
       <form class="navbar-form navbar-right">
        <button type="submit" class="btn btn-warning">Logout</button>
       </form>
+      !-->
 
 
     </div>

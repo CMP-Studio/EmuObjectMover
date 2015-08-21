@@ -1,5 +1,15 @@
 <?php
+session_start();
 require_once '../config.php';
+require_once filepath() . "app/project.php";
+
+if(!isset($_SESSION['project']))
+{
+  //Return to home
+  exit();
+}
+
+$info = getProjectInfo();
 ?>
 <!DOCTYPE html>
 <html>
@@ -8,13 +18,9 @@ require_once '../config.php';
       head();
     ?>
     <script type="text/javascript" src="search.js"></script>
-    <script type="text/javascript"> 
-    setProject(2);
-
-    </script>
   </head>
   <body>
-    <?php topbar("Project Title", 2); ?>
+    <?php topbar($info['title'], true); ?>
     <div class='padded'>
       <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#single" data-toggle="tab">Single Object</a></li>
@@ -38,6 +44,7 @@ require_once '../config.php';
             <input type="text" id="inputSIRN" class="form-control small-f" placeholder="IRN" >
             <h3 class='small-f N-results'> </h3>
             <button id="single-object" class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+            <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
             <div class="clearfix"></div>
           </form>
          </div>
@@ -51,6 +58,7 @@ require_once '../config.php';
             <input type="text" id="inputHIRN" class="form-control small-f" placeholder="IRN" >
             <h3 class='small-f N-results'> </h3>
             <button id='holder-search' class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+            <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
             <div class="clearfix"></div>
           </form>
           </div>
@@ -63,6 +71,7 @@ require_once '../config.php';
               <h3 class='small-f N-results'> </h3>
               <p class='small-f'><b>Note:</b> Large groups will take a long time to process but you can leave this page and it will still complete</p>
               <button id='group-search' class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+              <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
               <div class="clearfix"></div>
             </form>
            </div>
@@ -79,6 +88,7 @@ require_once '../config.php';
               <h3 class='small-f N-results'> </h3>
                <p class='small-f'><b>Note:</b> Large events will take a long time to process but you can leave this page and it will still complete</p>
                <button id="event-search" class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+               <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
                <div class="clearfix"></div>
              </form>
             </div>

@@ -1,9 +1,4 @@
- var project = null;
 
-  function setProject(p)
-  {
-    project = p;
-  }
 
 
 $(document).ready(function() 
@@ -11,7 +6,7 @@ $(document).ready(function()
 	loadItems();
 	function loadItems()
 	{
-		var url = 'editAjax.php?action=get&project=' + project;
+		var url = 'editAjax.php?action=get';
 
 		$.getJSON(url).done( function(data)
 		{
@@ -50,7 +45,7 @@ $(document).ready(function()
 		$(".delBtn").unbind("click");
 		$(".delBtn").click(function() {
 			var irn = $(this).attr("data-irn");
-			var url = 'editAjax.php?action=delete&project=' + project +'&irn=' + irn;
+			var url = 'editAjax.php?action=delete&irn=' + irn;
 			console.log(url);
 			$.getJSON(url).done( function(data)
 			{

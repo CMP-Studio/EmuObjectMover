@@ -292,7 +292,9 @@ function recordObject($irn)
     'W=MesTotWidthInchFrac_tab',
     'D=MesTotDepthInchFrac_tab',
     'Barcode=TitBarcode',
-    'image.resource{height:300,source:master}'
+    'image.resource{height:300,source:master}',
+    'NotesA=ConHandlingInstructions',
+    'NotesB=InsInstallationNotes'
   );
 
   $terms->add('irn',trim($irn));
@@ -385,12 +387,32 @@ function formatResults($result)
       {
         $imgloc = IMuImageLoc() . $imgname;
         saveImg($imgloc, $image);
-        $result->rows[$key]['image'] = IMuImageURL() . $imgname;
+        $result->rows[$key]['image'] = IMuImageURL() . urlencode($imgname);
       }
       else
       {
         $result->rows[$key]['image'] = null;
       }
+
+      //Fix notes
+      $notes = '';
+      if(isset($r['NotesA']))
+      {
+        $notes .= $r['NotesA'];
+        unset($result->rows[$key]['NotesA']);
+      }
+      if(isset($r['NotesA']) && isset($r['NotesB']))
+      {
+        $notes .= "\n";
+      }
+      if(isset($r['NotesB']))
+      {
+        $notes .= $r['NotesB'];
+        unset($result->rows[$key]['NotesB']);
+      }
+
+      $result->rows[$key]['Notes'] = $notes;
+
       return $result->rows[$key];
 
 
@@ -448,9 +470,9 @@ function deleteExistingRecords($record)
 
 function insertRecord($record)
 {
-  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, medium, location_name, location_barcode, image_url, holder) VALUES ("
+  $query = "INSERT INTO objects (irn, accession_no, barcode, title, year, medium, location_name, location_barcode, image_url, holder, notes) VALUES ("
   . sqlSafe($record['irn']) . "," . sqlSafe($record['AccNo']) . "," . sqlSafe($record["Barcode"]) . "," . sqlSafe($record["Title"]) . "," . sqlSafe($record["Year"]) .
-  "," . sqlSafe($record['Medium']) . "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . "," . sqlSafe($record['is_holder']) . ")";
+  "," . sqlSafe($record['Medium']) . "," . sqlSafe($record["Location"]["LocLocationName"]) . "," . sqlSafe($record["Location"]["LocBarcode"]) . "," . sqlSafe($record["image"]) . "," . sqlSafe($record['is_holder']) . "," . sqlSafe($record['Notes']) . ")";
 
   $result = writeQuery($query);
 

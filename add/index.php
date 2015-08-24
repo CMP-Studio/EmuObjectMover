@@ -43,7 +43,7 @@ $info = getProjectInfo();
             <label for="inputSIRN" class="sr-only">IRN</label>
             <input type="text" id="inputSIRN" class="form-control small-f" placeholder="IRN" >
             <h3 class='small-f N-results'> </h3>
-            <button id="single-object" class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+            <button id="single-object" class="btn btn-lg btn-primary right small-f search-btn" type="button"><i class="fa fa-search"></i> Search</button>
             <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
             <div class="clearfix"></div>
           </form>
@@ -57,7 +57,7 @@ $info = getProjectInfo();
             <label for="inputHIRN" class="sr-only">IRN</label>
             <input type="text" id="inputHIRN" class="form-control small-f" placeholder="IRN" >
             <h3 class='small-f N-results'> </h3>
-            <button id='holder-search' class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+            <button id='holder-search' class="btn btn-lg btn-primary right small-f search-btn" type="button"><i class="fa fa-search"></i> Search</button>
             <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
             <div class="clearfix"></div>
           </form>
@@ -70,7 +70,7 @@ $info = getProjectInfo();
               <input type="text" id="inputGIRN" class="form-control small-f" placeholder="IRN" >
               <h3 class='small-f N-results'> </h3>
               <p class='small-f'><b>Note:</b> Large groups will take a long time to process but you can leave this page and it will still complete</p>
-              <button id='group-search' class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+              <button id='group-search' class="btn btn-lg btn-primary right small-f search-btn" type="button"><i class="fa fa-search"></i> Search</button>
               <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
               <div class="clearfix"></div>
             </form>
@@ -87,7 +87,7 @@ $info = getProjectInfo();
                <input type="text" id="inputEIRN" class="form-control small-f" placeholder="IRN" >
               <h3 class='small-f N-results'> </h3>
                <p class='small-f'><b>Note:</b> Large events will take a long time to process but you can leave this page and it will still complete</p>
-               <button id="event-search" class="btn btn-lg btn-primary right small-f" type="button"><i class="fa fa-search"></i> Search</button>
+               <button id="event-search" class="btn btn-lg btn-primary right small-f search-btn" type="button"><i class="fa fa-search"></i> Search</button>
                <a href="../edit/"><button id='back' class="btn btn-lg btn-primary small-f right" type="button">Back to Project</button></a>
                <div class="clearfix"></div>
              </form>

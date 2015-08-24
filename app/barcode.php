@@ -2,7 +2,7 @@
 	require_once __DIR__ . "/../config.php";
 	require_once filepath() . "plugins/tcpdf/tcpdf.php";
 
-	function generateBarcode($text, $w=15, $h=20 )
+	function generateBarcode($text, $w=9, $h=16 )
 	{
 	/*	
 		$barcodeobj = new TCPDFBarcode($text, 'C128');
@@ -15,20 +15,20 @@
 		if(strlen($text) >= 1)
 		{
 		$html = "<div class=\"barcode\">
-		\t<div class=\"barcode-imgs\">
-		\t\t\t<img src=\"$barLoc/!bookend.gif\">";
+		
+		\t\t\t<img src=\"$barLoc/!bookend.gif\" width=\"$w\" height=\"$h\" alt=\"*\"/>";
 		for ($i=0; $i < strlen($text); $i++) 
 		{
 			$char = $text[$i];
 			$html .= "
-			\t\t\t<img src=\"$barLoc/$char.gif\">
+			\t\t\t<img src=\"$barLoc/$char.gif\" width=\"$w\" height=\"$h\" alt=\"$char\"/>
 			";
 
 		}
 		$html .= "
-		\t\t\t<img src=\"$barLoc/!bookend.gif\">
-		\t</div>
-		\t<p class='barcode-text'>$text</p>\n</div>";
+		\t\t\t<img src=\"$barLoc/!bookend.gif\" width=\"$w\" height=\"$h\" alt=\"*\"/>
+		\t<p class=\"barcode-text\">$text</p>
+		\n</div>";
 
 		return $html;
 	}

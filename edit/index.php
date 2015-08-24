@@ -46,11 +46,11 @@ else
         <h2 class="left">Due: <?php print date('M j, Y', strtotime($info["duedate"]));?></h2>
         <?php } 
           $hash = $info['hash'];
-          $plink = $_SERVER['SERVER_NAME'] . sitepath() . 'view?p=' . $hash;
+          $plink = "http://" . $_SERVER['SERVER_NAME'] . sitepath() . 'view?p=' . $hash;
         ?>
-        <h2 class='left'>Link: <a href='<?php print 'http://' . $plink; ?>'><?php print $plink; ?></a></h2>
+        <a target = "_blnak" href="<?php print $plink; ?>" download><button id='btnSave' class="btn btn-success">Export to PDF</button></a>
         <form action='<?php print sitepath(); ?>add'>
-          <button id='btnAdd' type="submit" class="btn btn-success">Add Objects</button>
+          <button id='btnAdd' type="submit" class="btn btn-info">Add Objects</button>
         </form>
     </div>
     <div id='objects'>
@@ -60,7 +60,7 @@ else
             <th>Image</th>
             <th>Acc. No.</th>
             <th>Title</th>
-            <th>Actions</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <!-- <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button> -->

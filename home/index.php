@@ -29,12 +29,12 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>Project Name</th>
-              <th>Notes</th>
-              <th>Objects</th>
-              <th>Due</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th width="15%">Project Name</th>
+              <th width="50%">Notes</th>
+              <th width="10%">Objects</th>
+              <th width="15%">Due</th>
+              <th width="5%">Edit</th>
+              <th width="5%">Delete</th>
             </tr>
           </thead>
           <tbody id='projects'>

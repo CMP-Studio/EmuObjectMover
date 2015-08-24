@@ -8,28 +8,28 @@ $(document).ready(function() {
 
 
   $("#single-object").click(function(){
-    $("form.search button").attr("disabled","disabled");
+    $("form.search .search-btn").attr("disabled","disabled");
       $("#result-holder").empty();
       singleSearch(0);
       type = 'single';
   });
 
   $("#holder-search").click(function(){
-    $("form.search button").attr("disabled","disabled");
+    $("form.search .search-btn").attr("disabled","disabled");
       $("#result-holder").empty();
       holderSearch(0);
       type = 'holder';
   });
 
   $("#group-search").click(function(){
-    $("form.search button").attr("disabled","disabled");
+    $("form.search .search-btn").attr("disabled","disabled");
       $("#result-holder").empty();
       groupSearch(0);
       type = 'group';
   });
 
   $("#event-search").click(function(){
-    $("form.search button").attr("disabled","disabled");
+    $("form.search .search-btn").attr("disabled","disabled");
       $("#result-holder").empty();
       eventSearch(0);
       type = 'event';
@@ -198,7 +198,7 @@ $(document).ready(function() {
     .fail(function( jqxhr, textStatus, error){
       var err = textStatus + ", " + error;
       console.log("Fail: " + err);
-      $("form.search button").attr("disabled",null);
+      $("form.search .search-btn").attr("disabled",null);
     });
   }
 

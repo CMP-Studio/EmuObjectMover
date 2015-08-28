@@ -27,7 +27,7 @@ function topbar($title = "Emu mover", $project = false)
           <?php 
           if($project)
           {
-            print "<a href='" . sitepath() . "edit'>" . $title . "</a>";
+            print "<a href='" . sitepath() . "view'>" . $title . "</a>";
           }
           else
           {

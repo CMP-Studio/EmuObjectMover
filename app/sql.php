@@ -52,10 +52,15 @@ function readQuery($query)
 	return null;
 }
 
-function sqlSafe($data)
+function sqlSafe($data, $col=false)
 {
 	$sql = getSQL();
 	if(!isset($data)) return 'NULL';
+
+	if($col)
+	{
+		return "`" . $sql->real_escape_string($data) . "`"; 
+	}
 	return "'" . $sql->real_escape_string($data) . "'"; 
 }
 

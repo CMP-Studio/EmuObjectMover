@@ -33,7 +33,7 @@
               <th width="50%">Notes</th>
               <th width="10%">Objects</th>
               <th width="15%">Due</th>
-              <th width="5%">Edit</th>
+              <th width="5%">Details</th>
               <th width="5%">Delete</th>
             </tr>
           </thead>
@@ -63,10 +63,10 @@
                   print "\t<td>None</td>\n";
                 }
                 ?>
-                <td>
-                  <form action='../edit/' method="POST">
+                 <td>
+                  <form action='../view/' method="POST">
                       <input type='hidden' name='project' value='<?php print $p['id']; ?>'/>
-                      <button type="submit" class="btn btn-large btn-info"><i class="fa fa-pencil"></i></button>
+                      <button type="submit" class="btn btn-large btn-info"><i class="fa fa-eye"></i></button>
                   </form>
                 </td>
                 <td>

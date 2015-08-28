@@ -1,253 +1,139 @@
 <?php
-require_once "../config.php";
-require_once filepath() . "plugins/tcpdf/tcpdf.php";
-require_once "view.php";
-
-$s_pdf = $_GET["p"];
-
-// create new PDF document
-$size = array(8.5, 11);
-
-$pdf = new TCPDF("l", "in", $size, true, "UTF-8", false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor("EMu Mover");
-$pdf->SetTitle("Project Title");
-$pdf->SetSubject("Project");
-$pdf->SetKeywords("EMu, Project");
-$pdf->SetPrintHeader(false);
-$pdf->SetPrintFooter(false);
-$pdf->SetMargins(0.5,0.5,0.5, false);
-
-setSpacing($pdf);
-
-// set font
-$pdf->SetFont("helvetica", "", 10);
-
-// add a page
-$pdf->AddPage();
-$pdf->SetAutoPageBreak(TRUE,0);
-
-$html = "";
-
-$css = file_get_contents("report.css");
-
- $style = "<style type=\"text/css\">\n$css\n</style>";
+session_start();
+require_once '../config.php';
+require_once filepath() . "app/project.php";
 
 
-$w = $pdf->getPageWidth();
-$h = $pdf->getPageHeight();
-$m = $pdf->getMargins();
-
-$pdf->setCellPaddings(0.05,0.1,0.05,0);
-$pdf->setCellHeightRatio(0.4);
-
-$w -= $m['left'] + $m['right'];
-$h -= $m['top'] + $m['bottom'];
-
-
-
-$sixth = $w/6 ;
-
-$sixth = floor($sixth * 100.0) / 100.0;
-
-$projID = getProjectID($s_pdf);
-$objs = generatePDFcells($projID);
-
-
-addHeaderRow($pdf);
-
-//Get row heights
-$heights = array();
-foreach ($objs as $k1 => $obj) 
+if(isset($_POST['project']))
 {
-	$c = 0;
+  //Existing project - from Home
+  $project = $_POST['project'];
 
-	$lh = 0;
-	$y = $pdf->GetY();
-	foreach ($obj as $k2 => $cell) 
-	{
-		$cellWidth = $sixth;
-		$x = $pdf->GetX();
+  $_SESSION['project'] = $project;
 
-		if($c == 1)
-		{
-			$cellWidth = 3*$sixth;
-		}
-
-		$pdf->writeHTMLcell($cellWidth, 0, $x, $y, $style . $cell, 0, 0, 0, 1, '', 1);
-		$c++;
-
-		$tlh = $pdf->getLastH();
-		//$objs[$k1][$k2] .= "<p>$tlh</p>";
-		if($tlh > $lh)
-		{
-			$lh = $tlh;
-		}
-	}
-
-	$heights[$k1] = $lh;
-	$pdf->deletePage($pdf->getPage());
-	$pdf->AddPage();
-
+  $info = getProjectInfo();
 }
-
-
-addIntro($pdf, $projID);
-
-$y = $pdf->GetY();
-addHeaderRow($pdf);
-//Now actually create the PDF
-foreach ($objs as $k1 => $obj) 
+else if(isset($_SESSION['project']))
 {
-	$y = $pdf->GetY();
-	if(isset($heights[$k1]))
-	{
-		if($y + $heights[$k1] >= $h)
-		{
-			$pdf->AddPage();
-			addHeaderRow($pdf);
-		}
-	}
-	$c = 0;
-
-	$lh = 0;
-	$y = $pdf->GetY();
-	foreach ($obj as $k2 => $cell) 
-	{
-		$cellWidth = $sixth;
-		$x = $pdf->GetX();
-
-		if($c == 1)
-		{
-			$cellWidth = 3*$sixth;
-		}
-
-		$pdf->writeHTMLcell($cellWidth, $heights[$k1], $x, $y, $style . $cell, 'LTRB', 0, 0, 1, '', 1);
-		$c++;
-
-	}	
-	$pdf->SetY($y + $heights[$k1]);
-	
+  //Project set in session
+  $info = getProjectInfo();
 }
-
-
-
-if($s_pdf)
+else if(isset($_POST['newProj']))
 {
-
-$info = getProjectInfo($projID);
-
-$pdf->Output( $info['title'] . ".pdf", "I");
-
-exit();
-
+  //Create new project
+  $info = createProject();
 }
 else
 {
-	print "$style";
-	var_dump($objs);
+  //Send to home
+  exit();
+  
 }
-
-
-function addHeaderRow($pdf)
-{
-
-$pdf->SetFont("helvetica", "B", 10);
-$w = $pdf->getPageWidth();
-$m = $pdf->getMargins();
-
-
-
-	$w -= $m['left'] + $m['right'];
-	$sixth = $w/6;
-	$sixth = floor($sixth * 100.0) / 100.0;
-
-	$pdf->Cell($sixth,0,'Current Location','LTRB',0,'C');
-	$pdf->Cell($sixth*3,0,'Object','LTRB',0,'C');
-	$pdf->Cell($sixth,0,'Moved To','LTRB',0,'C');
-	$pdf->Cell($sixth,0,'Audit','LTRB',1,'C');
-$pdf->SetFont("helvetica", "", 10);
-
-}
-
-function addIntro($pdf, $id)
-{
-	$info = getProjectInfo($id);
-
-	$pdf->SetFont("helvetica", "", 16);
-	$w = $pdf->getPageWidth();
-	$m = $pdf->getMargins();
-	$w -= $m['left'] + $m['right'];
-
-	$pdf->cell($w, 0, $info['title'],0,1,'C');
-	$pdf->setCellHeightRatio(1);
-
-	$cwKey = $w/8;
-	$cwVal = $w/2 - $cwKey;
-
-	$pdf->SetFont("helvetica", "B", 10);
-	$pdf->MultiCell($cwKey, 0, 'Requested By',0,'R', 0, 0);
-	$pdf->SetFont("helvetica", "", 10);
-	$pdf->MultiCell($cwVal, 0, $info['name'],0,'L',0,0);
-	$lh = $pdf->getLastH();
-
-	$pdf->SetFont("helvetica", "B", 10);
-	$pdf->MultiCell($cwKey, 0, 'Move To',0,'R', 0, 0);
-	$pdf->SetFont("helvetica", "", 10);
-	$pdf->MultiCell($cwVal, 0, $info['moveto'],0,'L',0,1);
-	$lh = $pdf->getLastH();
-
-	if(!empty($info['notes']))
-	{
-		$pdf->SetFont("helvetica", "B", 10);
-		$pdf->MultiCell($cwKey, 0, 'Notes',0,'R', 0, 0);
-		$pdf->SetFont("helvetica", "", 10);
-		$pdf->MultiCell($cwVal, 0, $info['notes'],0,'L',0,0);
-		$lh = $pdf->getLastH();
-	}
-	if($info['duedate'] != '0000-00-00 00:00:00')
-	{
-		$time = strtotime($info['duedate']);
-		$date = date('n/j/Y', $time);
-		$pdf->SetFont("helvetica", "B", 10);
-		$pdf->MultiCell($cwKey, 0, 'Due',0,'R',0,0);
-		$pdf->SetFont("helvetica", "", 10);
-		$pdf->MultiCell($cwVal, 0, $date,0,'L',0,0);
-	}
-	$pdf->SetY($pdf->GetY() + $lh);
-	$pdf->Ln();
-	$pdf->setCellHeightRatio(0.4);
-}
-function setSpacing($pdf)
-{
-	$tagvs = array('div' => 
-				array(
-						0 => array('h' => '', 'n' => 0),
-						1 => array('h' => '', 'n' => 0)
-					),
-				'p' =>
-				array(
-						0 => array('h' => '', 'n' => 0),
-						1 => array('h' => '', 'n' => 0)
-					),
-				'table' =>
-				array(
-						0 => array('h' => '', 'n' => 0),
-						1 => array('h' => '0.1', 'n' => 1)
-					),
-				'tr' =>
-				array(
-						0 => array('h' => '', 'n' => 0),
-						1 => array('h' => '0.1', 'n' => 1)
-					)
-				);
-
-	$pdf->setHtmlVSpace($tagvs);
-}
-
-
-
-
 ?>
+<html>
+  <head>
+    <?php
+      head();
+    ?>
+    <script type="text/javascript" src="view.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#date-control').datepicker({
+          format: "yyyy-mm-dd"
+        });
+      });
+    </script>
+  </head>
+  <body>
+      <?php topbar($info['title'], true); ?>
+    <div id='header' class='padded relative clearfix'>
+    <table class="projectDetail">
+      <tr>
+        <th class="key">
+          Due by
+        </th>
+        <td class="field">
+          <span id="due-date">
+          <?php if($info['duedate'] == '0000-00-00 00:00:00') { ?>
+          None
+          <?php } else {
+          print date('Y-m-d', strtotime($info["duedate"]));
+          }?>
+          </span>
+          <input type="text" id="date-control"  name="DueDate"   class="edit-control" placeholder="Due Date"/>
+        </td>
+        <td>
+          <button id='edit-date' class='nobutton edit-btn' toggle="edit" data-key="duedate"  input-target="#date-control" display-target="#due-date"><i class='fa fa-pencil'></i></button>
+        </td>
+      </tr>
+      <tr>
+        <th class="key">
+          Move To
+        </th>
+        <td class="field" >
+          <span id="move-to">
+          <?php 
+          print $info["moveto"];
+          ?>
+          </span>
+          <input type="text" id="move-control"  name="MoveTo"   class="edit-control" placeholder="Move To"/>
+        </td>
+        <td>
+           <button id='edit-move' class='nobutton edit-btn' data-key="moveto" toggle="edit" input-target="#move-control" display-target="#move-to"><i class='fa fa-pencil'></i></button>
+        </td>
+      </tr>
+      <tr>
+        <th class="key">
+          Notes
+        </th>
+        <td class="field" >
+         <button id='edit-note' class='nobutton edit-btn' data-key="notes"  toggle="edit" input-target="#note-control" display-target="#notes"><i class='fa fa-pencil'></i></button>
+        </td>
+        <td>
+                   </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <span id="notes">
+          <?php 
+          print $info["notes"];
+          ?>
+          </span>
+          <textarea id="note-control" class="edit-control">
+          </textarea>
+        </td>
+      </tr>
+       
+    </table>
+      <div id="projButtons">
+        <?php 
+          $hash = $info['hash'];
+          $plink = "http://" . $_SERVER['SERVER_NAME'] . sitepath() . 'view/genPDF.php?p=' . $hash;
+        ?>
+        <a target = "_blank" href="<?php print $plink; ?>" download><button id='btnSave' class="btn btn-success">Export to PDF</button></a>
+        <form action='<?php print sitepath(); ?>add'>
+          <button id='btnAdd' type="submit" class="btn btn-info">Add Objects</button>
+        </form>
+      </div>
+    </div>
+    <div id='objects'>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Acc. No.</th>
+            <th>Title</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <!-- <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button> -->
+        <tbody id='object-body'>
+
+
+              
+
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

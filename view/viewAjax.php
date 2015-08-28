@@ -35,6 +35,9 @@ switch($action)
    case 'delete':
    	delItem();
    	break;
+  case 'update':
+    updateProj();
+    break;
 
 
   default:
@@ -92,10 +95,46 @@ function delItem()
 	success();
 
 }
+function updateProj()
+{
+    if(!isset($_GET['key']))
+    {
+      $errors = array("source"=>"main","error"=>"Key not set, exiting");
+      throwError($errors);
+    }
+    $key = $_GET['key'];
+    if(!isset($_GET['value']))
+    {
+      $value = '';
+    }
+    else
+    {
+      $value = $_GET['value'];
+    }
 
-function success()
+    $project = $_SESSION['project'];
+
+    $query = "UPDATE projects SET " . sqlSafe($key, true) . " = " . sqlSafe($value) . " WHERE id = " . sqlSafe($project);
+
+      writeQuery($query);
+
+   if(hasSQLerrors())
+    {
+      throwError(getSQLerrors());
+    }
+
+  success(array('key' => $key, 'value' => $value, 'query' => $query));
+
+}
+
+
+function success($info = '')
 {
   $response = array('success' => true);
+  if(!empty($info))
+  {
+    $response['info'] = $info;
+  }
   print json_encode($response);
   exit(0);
 }

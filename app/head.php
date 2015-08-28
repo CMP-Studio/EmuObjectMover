@@ -34,6 +34,7 @@ function head()
 
 <!-- Date picker -->
 <script type="text/javascript" src="<?php print $sitepath; ?>resources/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php print $sitepath; ?>resources/css/bootstrap-datepicker3.css" />
 
  <!-- Main CSS -->
  <link rel="stylesheet" type="text/css" href="<?php print $sitepath; ?>resources/css/main.css" />

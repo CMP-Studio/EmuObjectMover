@@ -55,7 +55,11 @@ function generateObjectRows($id)
 
 function generatePDFcells($id)
 {
-	$query = "SELECT object_irn as irn FROM objectProject WHERE project_id = " . sqlSafe($id);
+	$query = "SELECT object_irn as irn FROM 
+objectProject op
+LEFT JOIN objects o on (o.irn = op.object_irn)
+ WHERE op.project_id =  " . sqlSafe($id) . " order by location_name, accession_no";
+ //print $query;
 	$result = readQuery($query);
 	$cells = array();
 	while($row = $result->fetch_assoc())
@@ -472,7 +476,7 @@ function getCreators($irn)
 function getMeasurements($irn)
 {
 	$irn = sqlSafe($irn);
-	$query = "SELECT type, width, height, depth FROM measurements WHERE object_irn = $irn";
+	$query = "SELECT type, width, height, depth FROM measurements WHERE object_irn = $irn Order by type";
 	$result = readQuery($query);
 
 	$measure = array();
@@ -486,7 +490,7 @@ function getMeasurements($irn)
 function getChildren($irn)
 {
 	$irn = sqlSafe($irn);
-	$query = "SELECT c.irn, c.title, c.accession_no, c.location_barcode, c.location_name, c.barcode FROM children c LEFT JOIN objects o ON (o.irn = c.parent_irn) WHERE c.parent_irn = $irn AND (c.location_name != o.location_name OR o.location_name is null)";
+	$query = "SELECT c.irn, c.title, c.accession_no, c.location_barcode, c.location_name, c.barcode FROM children c LEFT JOIN objects o ON (o.irn = c.parent_irn) WHERE c.parent_irn = $irn AND (c.location_name != o.location_name OR o.location_name is null) order by c.accession_no";
 	$result = readQuery($query);
 	//var_dump($query);
 	$child = array();

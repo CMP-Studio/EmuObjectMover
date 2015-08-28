@@ -2,7 +2,7 @@
 	require_once __DIR__ . "/../config.php";
 	require_once filepath() . "plugins/tcpdf/tcpdf.php";
 
-	function generateBarcode($text, $w=9, $h=16 )
+	function generateBarcode($text, $w=9, $h=9 )
 	{
 	/*	
 		$barcodeobj = new TCPDFBarcode($text, 'C128');

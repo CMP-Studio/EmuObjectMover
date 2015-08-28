@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config.php';
 
 	function getProjectInfo()
 	{
-		$query = "SELECT p.id, p.duedate, p.title, p.notes, p.hash FROM projects p WHERE p.id = " . sqlSafe($_SESSION['project']);
+		$query = "SELECT p.id, p.duedate, p.title, p.notes, p.hash, p.moveto FROM projects p WHERE p.id = " . sqlSafe($_SESSION['project']);
 
 		$result = readQuery($query);
 

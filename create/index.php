@@ -1,8 +1,21 @@
 <?php
-session_start();
+
 
   require_once "../config.php";
+  require_once filepath() . "app/auth.php";
+
   $sitepath = sitepath();
+
+
+  if(checkAuth())
+     {
+
+     }
+     else
+     {
+      redirect(sitepath());
+     }
+
   unset($_SESSION['project']);
 ?>
 <!DOCTYPE html>
@@ -19,7 +32,7 @@ session_start();
   <body>
     <?php topbar(); ?>
     <div class='form'>
-      <form id='createProj' action="../edit/" method="post">
+      <form id='createProj' action="../view/" method="post">
           <label for="projName"  class="sr-only">Project Name</label>     
         <input type="text" id="projName"  name="projName"  class="form-control" placeholder="Project Name" required="" autofocus=""/>
           <label for="projDue"  class="sr-only">Due Date</label>         

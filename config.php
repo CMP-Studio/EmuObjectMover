@@ -1,7 +1,23 @@
 <?php
+/* Ensure we have a session running */
+function is_session_started()
+{
+    if ( php_sapi_name() !== 'cli' ) {
+        if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+            return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+        } else {
+            return session_id() === '' ? FALSE : TRUE;
+        }
+    }
+    return FALSE;
+}
+if ( is_session_started() === FALSE ) session_start();
+
+
 /* This file makes it so that as long as the page knows where this file is located all other paths are easy */
   require_once filepath() . "app/head.php";
     require_once filepath() . "app/topbar.php";
+
 
 //The web server filepath (i.e. start at webroot)
   function sitepath()
@@ -52,6 +68,14 @@
     return sitepath() . "tmpimgs/";
   }
 
+function redirect($url){
+    if (headers_sent()){
+      die('<script type="text/javascript">window.location.href="' . $url . '";</script>');
+    }else{
+      header('Location: ' . $url);
+      die();
+    }    
+}
 
   function IMuPort()
   {

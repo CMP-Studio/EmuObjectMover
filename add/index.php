@@ -1,12 +1,22 @@
 <?php
-session_start();
+
 require_once '../config.php';
 require_once filepath() . "app/project.php";
+require_once filepath() . "app/auth.php";
+
+if(checkAuth())
+     {
+
+     }
+     else
+     {
+      redirect(sitepath());
+     }
 
 if(!isset($_SESSION['project']))
 {
   //Return to home
-  exit();
+  redirect(sitepath() . "home/");
 }
 
 $info = getProjectInfo();

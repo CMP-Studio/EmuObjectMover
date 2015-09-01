@@ -35,11 +35,11 @@ function topbar($title = "Emu mover", $project = false)
           }?>
           </h3></li>
       </ul>
-      <!--
-      <form class="navbar-form navbar-right">
-       <button type="submit" class="btn btn-warning">Logout</button>
+      
+      <form class="navbar-form navbar-right" method="post" action="<?php print sitepath(); ?>">
+       <button type="submit" name="logout"  class="btn btn-warning">Logout</button>
       </form>
-      !-->
+      
 
 
     </div>

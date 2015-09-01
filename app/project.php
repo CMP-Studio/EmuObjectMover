@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
-	require_once filepath() . "app/sql.php";
+require_once filepath() . "app/auth.php";
+require_once filepath() . "app/sql.php";
 
 	function getProjectInfo()
 	{
@@ -21,14 +22,16 @@ require_once __DIR__ . '/../config.php';
 
 	function createProject()
 	{
-		$account = 1; //For now
+		$account = getAccount();
+		$projdue = tryRetrieve($_POST, 'projDue');
+		$projtime = strtotime($projdue);
 
-		$duedate = sqlSafe(tryRetrieve($_POST, 'projDue'));
+		$duedate = sqlsafe(date("Y-m-d H:i:s", $projtime ));
 		$title = sqlSafe(tryRetrieve($_POST, 'projName'));
-		$notes = sqlSafe(tryRetrieve($_POST, 'projNotes'));
+		//$notes = sqlSafe(tryRetrieve($_POST, 'projNotes'));
 
 
-		$query = "INSERT INTO projects (account_id, duedate, title, notes) VALUES ($account, $duedate, $title, $notes)";
+		$query = "INSERT INTO projects (account_id, duedate, title) VALUES ($account, $duedate, $title)";
 		if(writeQuery($query))
 		{
 			$id = getInsertID();

@@ -1,14 +1,43 @@
 <?php
-  session_start();
+ 
   require_once "../config.php";
   require_once "projects.php";
+  require_once filepath() . "app/auth.php";
 
+  if(isset($_POST['login']))
+  {
+    if(authorize($_POST['email']))
+    {
+
+    }
+    else
+    {
+      redirect(sitepath());
+    }
+  }
+  else if(isset($_POST["register"]))
+  {
+    createAccount($_POST['email'], $_POST['name']);
+  }
+  else
+  {
+     if(checkAuth())
+     {
+
+     }
+     else
+     {
+      redirect(sitepath());
+     }
+  }
 
 
   if(isset($_POST["projectToDelete"]))
   {
     deleteProject($_POST["projectToDelete"]);
   }
+
+
 
 ?>
 
@@ -39,7 +68,7 @@
           </thead>
           <tbody id='projects'>
             <?php
-              $projects = getProjects(1);
+              $projects = getProjects(getAccount());
               //var_dump($projects);
               
 

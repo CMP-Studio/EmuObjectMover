@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 //Test
 //http://it-svr-emu03/mover/add/addAjax.php?irn=90991
 error_reporting(0);
@@ -7,6 +7,7 @@ error_reporting(0);
 require_once "../config.php";
 require_once filepath() . "app/imu.php";
 require_once filepath() . "app/sql.php";
+
 
 header('Content-Type: application/json');
 

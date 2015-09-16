@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../config.php";
-require_once sitepath() . "app/config/sdConfig.php";
-require_once sitepath() . "app/api.php";
+require_once filepath() . "app/config/sdConfig.php";
+require_once filepath() . "app/api.php";
 
 $input =
 "<Operation>
@@ -23,7 +23,7 @@ $input =
       <value>API Test</value>
     </parameter>
   </Details>
-</Operation>"
+</Operation>";
 
 $key = getSDkey();
 $method = "ADD_REQUEST";

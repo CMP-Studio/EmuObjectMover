@@ -4,6 +4,7 @@ require_once '../config.php';
 require_once filepath() . "app/project.php";
 require_once filepath() . "app/auth.php";
 
+
      if(checkAuth())
      {
 
@@ -37,7 +38,7 @@ else
 {
   //Send to home
   exit();
-  
+
 }
 ?>
 <html>
@@ -82,7 +83,7 @@ else
         </th>
         <td class="field" >
           <span id="move-to">
-          <?php 
+          <?php
           print $info["moveto"];
           ?>
           </span>
@@ -105,7 +106,7 @@ else
       <tr>
         <td colspan="3">
           <span id="notes">
-          <?php 
+          <?php
           print $info["notes"];
           ?>
           </span>
@@ -113,14 +114,14 @@ else
           </textarea>
         </td>
       </tr>
-       
+
     </table>
       <div id="projButtons">
-        <?php 
-          $hash = $info['hash'];
-          $plink = "http://" . $_SERVER['SERVER_NAME'] . sitepath() . 'view/genPDF.php?p=' . $hash;
+        <?php
+
         ?>
-        <a target = "_blank" href="<?php print $plink; ?>" download><button id='btnSave' class="btn btn-success">Export to PDF</button></a>
+        <a id='downloadLink' href='viewAjax.php?action=pdf' download><button id='btnPDF' class="btn btn-success">Export to PDF</button></a>
+        <button id='btnSD' class="btn btn-success">Create ServiceDesk Ticket</button>
         <form action='<?php print sitepath(); ?>add'>
           <button id='btnAdd' type="submit" class="btn btn-info">Add Objects</button>
         </form>
@@ -140,7 +141,7 @@ else
         <tbody id='object-body'>
 
 
-              
+
 
         </tbody>
       </table>

@@ -1,11 +1,12 @@
 
 
 
-$(document).ready(function() 
+$(document).ready(function()
 {
 	/* 'Main' functions */
 	inlineEdit();
 	loadItems();
+	$("#btnSD").click(genSD);
 
 
 	/* Load Items */
@@ -95,7 +96,7 @@ $(document).ready(function()
 
 
 				var text = $(display).text();
-				
+
 				if(text == "Saving...")
 				{
 					return;
@@ -111,77 +112,89 @@ $(document).ready(function()
 				$(this).children().filter("i").addClass("fa");
 				$(this).children().filter("i").addClass("fa-floppy-o");
 
-			//Setup cancel button
-			$(cancel).show();
+				//Setup cancel button
+				$(cancel).show();
 
-			$(this).attr("toggle","save");
-		}
-		else
+				$(this).attr("toggle","save");
+			}
+			else
+			{
+
+				var input = $(this).attr("input-target");
+				var display = $(this).attr("display-target");
+				var cancel = $(this).attr("cancel-target");
+
+				var value = $(input).val().trim();
+				var key = $(this).attr("data-key");
+
+				$(input).hide();
+
+
+				$(display).text("Saving...");
+				updateProject(key, value);
+
+				$(display).show();
+
+
+
+				$(this).children().filter("i").removeClass();
+				$(this).children().filter("i").addClass("fa");
+				$(this).children().filter("i").addClass("fa-pencil");
+
+
+				$(cancel).hide();
+				$(this).attr("toggle","edit");
+			}
+		});
+
+		$(".cancel-edit").click(function()
 		{
-
 			var input = $(this).attr("input-target");
 			var display = $(this).attr("display-target");
-			var cancel = $(this).attr("cancel-target");
+			var edit = $(this).attr("edit-target");
 
-			var value = $(input).val().trim();
-			var key = $(this).attr("data-key");
-
+			$(input).val('');
 			$(input).hide();
-
-
-			$(display).text("Saving...");
-			updateProject(key, value);
-
 			$(display).show();
+			$(this).hide();
 
-			
+			$(edit).children().filter("i").removeClass();
+			$(edit).children().filter("i").addClass("fa");
+			$(edit).children().filter("i").addClass("fa-pencil");
+			$(edit).attr("toggle","edit");
+		});
+	}
 
-			$(this).children().filter("i").removeClass();
-			$(this).children().filter("i").addClass("fa");
-			$(this).children().filter("i").addClass("fa-pencil");
-
-
-			$(cancel).hide();
-			$(this).attr("toggle","edit");
-		}
-	});
-
-	$(".cancel-edit").click(function()
+	function updateProject(key, val)
 	{
-		var input = $(this).attr("input-target");
-		var display = $(this).attr("display-target");
-		var edit = $(this).attr("edit-target");
-
-		$(input).val('');
-		$(input).hide();
-		$(display).show();
-		$(this).hide();
-
-		$(edit).children().filter("i").removeClass();
-		$(edit).children().filter("i").addClass("fa");
-		$(edit).children().filter("i").addClass("fa-pencil");
-		$(edit).attr("toggle","edit");
-	});
-}
-
-function updateProject(key, val)
-{
-	var url = 'viewAjax.php?action=update&key=' + encodeURIComponent(key) + "&value=" + encodeURIComponent(val);
-	console.log(url);
-	$.getJSON(url).done(function(data)
-	{
-		var good = data.success;
-		if(good)
+		var url = 'viewAjax.php?action=update&key=' + encodeURIComponent(key) + "&value=" + encodeURIComponent(val);
+		console.log(url);
+		$.getJSON(url).done(function(data)
 		{
-			console.log(data);
+			var good = data.success;
+			if(good)
+			{
+				console.log(data);
 
 
-			$($("button[data-key=\"" + key +"\"]").attr("display-target")).text(val);
+				$($("button[data-key=\"" + key +"\"]").attr("display-target")).text(val);
 
-		}
+			}
 
-	});
-}
+		});
+	}
+
+
+
+	function genSD()
+	{
+		var url = 'viewAjax.php?action=servicedesk';
+		console.log(url);
+		$.getJSON(url).done(function(data)
+		{
+			console.log('done! SD');
+		});
+	}
 
 
 

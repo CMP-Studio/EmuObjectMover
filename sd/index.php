@@ -15,12 +15,20 @@ $input =
       <value>Normal</value>
     </parameter>
     <parameter>
-      <name>Date work needs to be complete:</name>
-      <value>9/24/2015</value>
+      <name>Requester</name>
+      <value>Russian, Regina</value>
+    </parameter>
+    <parameter>
+      <name>Description</name>
+      <value>This is a test</value>
+    </parameter>
+    <parameter>
+      <name>Due Date</name>
+      <value>24 September 2015, 12:00:00</value>
     </parameter>
     <parameter>
       <name>Subject</name>
-      <value>API Test</value>
+      <value>API Test Part 2</value>
     </parameter>
   </Details>
 </Operation>";
@@ -31,6 +39,8 @@ $method = "ADD_REQUEST";
 $postvars = array("OPERATION_NAME" => $method, "TECHNICIAN_KEY" => $key, "INPUT_DATA" => $input);
 
 $url = getSDBaseURL() . "sdpapi/request/";
+
+var_dump($url);
 
 var_dump(postAPI($url, $postvars, null, false));
 

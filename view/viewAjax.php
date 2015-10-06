@@ -2,12 +2,17 @@
 
 require_once "../config.php";
 require_once filepath() . "app/sql.php";
+require_once "genSD.php";
+require_once "genPDF.php";
 
 
 /* Handles calls from the edit page.
 
 		get - Gets items from project
 		delete - Delets an itme from the project
+    update - Update project details
+    pdf - Creates a PDF
+    servicedesk - Creates a SD ticket
 
 */
 header('Content-Type: application/json');
@@ -26,6 +31,7 @@ if(!isset($_SESSION['project']))
 
 
 $action = $_GET['action'];
+$project = $_SESSION['project'];
 
 switch($action)
 {
@@ -38,6 +44,14 @@ switch($action)
   case 'update':
     updateProj();
     break;
+  case 'pdf':
+    genPDF($project, false);
+    break;
+  case 'servicedesk':
+    genSD($project);
+    break;
+
+
 
 
   default:
@@ -50,7 +64,7 @@ switch($action)
 function getItems()
 {
 	$project = $_SESSION['project'];
-	$query = "SELECT o.irn, o.image_url,  o.accession_no, o.title FROM objectProject op 
+	$query = "SELECT o.irn, o.image_url,  o.accession_no, o.title FROM objectProject op
 	 LEFT JOIN objects o ON (op.object_irn = o.irn AND op.object_holder = o.holder)
 	 WHERE op.project_id = " . sqlSafe($project);
 
@@ -58,7 +72,7 @@ function getItems()
 
 	$return = array("objects" => array());
 
-	 while ($row = $res->fetch_row()) 
+	 while ($row = $res->fetch_row())
 	 {
         $jr = array();
 
@@ -124,6 +138,11 @@ function updateProj()
     }
 
   success(array('key' => $key, 'value' => $value, 'query' => $query));
+
+}
+
+function SDticket()
+{
 
 }
 

@@ -50,7 +50,8 @@ function postAPI($url, $params=null, $headers=null, $ssl=true)
   	   curl_setopt($curl,	CURLOPT_HTTPHEADER		, $headers);
     }
   	curl_setopt($curl,	CURLOPT_RETURNTRANSFER	, true);
-  	curl_setopt($curl,	CURLOPT_ENCODING 		, "gzip");
+    curl_setopt($curl,	CURLOPT_FOLLOWLOCATION	, TRUE);
+    //curl_setopt($curl,	CURLOPT_ENCODING 		, "gzip");
   	curl_setopt($curl,	CURLOPT_SSL_VERIFYPEER	, $ssl);
 
 

@@ -39,7 +39,7 @@ switch($action)
     checkInProject();
     break;
   case 'single':
-    addSingleObject(); 
+    addSingleObject();
     break;
   case 'event':
     addEventObjects();
@@ -142,8 +142,7 @@ function addHolder()
 
     success(array($object));
   } catch (Exception $e) {
-    var_dump($e);
-    throwError(array("source"=>"IMu"));
+    throwError(array("source"=>"IMu","error" => $e));
 
   }
 
@@ -313,7 +312,7 @@ function recordObject($irn)
 
     return $result;
 
-    
+
 
   } catch (Exception $e) {
 
@@ -484,21 +483,21 @@ function insertChildRecords($record)
 {
   $children = $record["Children"];
   $result = true;
-  foreach ($children as $key => $ch) 
+  foreach ($children as $key => $ch)
   {
       $query = "INSERT INTO children (irn, parent_irn, barcode, title, accession_no, location_name, location_barcode, holder) VALUES (" .
         sqlSafe($ch["irn"]) . "," . sqlSafe($record["irn"]) . "," . sqlSafe($ch["TitBarcode"]) ."," . sqlSafe($ch["Title"]) . "," . sqlSafe($ch['AccNo']) . "," .
         sqlSafe($ch["Location"]["LocLocationName"]) . "," . sqlSafe($ch["Location"]["LocBarcode"]) . "," . sqlSafe($record['is_holder']) . ")";
-        
+
         $result = $result && writeQuery($query);
-  } 
+  }
   return $result;
 }
 
 function insertMeasurements($record)
 {
   $measure = $record["Measurements"];
-  foreach ($measure as $key => $m) 
+  foreach ($measure as $key => $m)
   {
     $type = tryHash($m, "Type");
     $w = tryHash($m, "Width");
@@ -516,7 +515,7 @@ function insertCreators($record)
 {
   $cre = $record["Creator"];
   $irn = $record["irn"];
-  foreach ($cre as $key => $c) 
+  foreach ($cre as $key => $c)
   {
       $name = tryHash($c, "Name");
       $role = tryHash($c, "Role");

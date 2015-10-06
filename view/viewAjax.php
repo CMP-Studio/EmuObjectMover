@@ -48,7 +48,8 @@ switch($action)
     genPDF($project, false);
     break;
   case 'servicedesk':
-    genSD($project);
+    $url = genSD($project);
+    print json_encode(array("url" => $url));
     break;
 
 

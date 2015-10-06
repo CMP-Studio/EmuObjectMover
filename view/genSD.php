@@ -46,10 +46,18 @@ function genSD($projectID)
 
     $headers = array('Content-Type: multipart/form-data');
     $res = postAPI($url, $fields, $headers, false, false);
-
+    $resp = simplexml_load_string($res);
+    if(isset($resp->response->operation->result->status))
+    {
+      if($resp->response->operation->result->status == "Success")
+      {
+        //complete
+      }
+    }
+    return "https://" . getSDBaseURL() . "/WorkOrder.do?woMode=viewWO&woID=$wo"
   }
   else {
-
+    return null;
   }
 
 }

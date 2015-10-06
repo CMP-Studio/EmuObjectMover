@@ -42,9 +42,10 @@ function genSD($projectID)
     $wo = $resp->response->operation->Details[0]->workorderid;
     $url = getSDBaseURL() . "sdpapi/request/$wo/attachment?OPERATION_NAME=ADD_ATTACHMENT&TECHNICIAN_KEY=$key";
 
-    $postvars = array("FILE" => '@' . $file);
-    $headers = array("Content-Type:multipart/form-data");
-    $res = postAPI($url, $postvars, $headers, false);
+    $fields = array("file" => '@' . $file);
+    var_dump($file);
+    $headers = array('Content-Type: multipart/form-data');
+    $res = postAPI($url, $fields, $headers, false);
     var_dump("ATT:$res");
   }
   else {

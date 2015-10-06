@@ -53,6 +53,7 @@ function postAPI($url, $params=null, $headers=null, $ssl=true)
     curl_setopt($curl,	CURLOPT_FOLLOWLOCATION	, TRUE);
     //curl_setopt($curl,	CURLOPT_ENCODING 		, "gzip");
   	curl_setopt($curl,	CURLOPT_SSL_VERIFYPEER	, $ssl);
+    curl_setopt($curl,	CURLINFO_HEADER_OUT	, true);
 
 
   	if( ! $result = curl_exec($curl))
@@ -60,6 +61,9 @@ function postAPI($url, $params=null, $headers=null, $ssl=true)
           var_dump(curl_error($curl));
   		      return NULL;
       }
+
+      //For testing
+      var_dump(curl_getinfo ($curl, CURLINFO_HEADER_OUT));
 
   	curl_close($curl);
   	$data = json_decode($result);

@@ -48,8 +48,7 @@ switch($action)
     genPDF($project, false);
     break;
   case 'servicedesk':
-    $url = genSD($project);
-    print json_encode(array("url" => $url));
+    SDticket($project);
     break;
 
 
@@ -142,9 +141,14 @@ function updateProj()
 
 }
 
-function SDticket()
+function SDticket($project)
 {
-
+  $results = genSD($project);
+  if(isset($results))
+  {
+    $query = "UPDATE projects SET `servicedeskID` = " . sqlSafe($results['ID']) . " WHERE id = " . sqlSafe($project);
+    print json_encode(array("url" => $results['url']));
+  }
 }
 
 

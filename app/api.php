@@ -40,7 +40,7 @@ function postAPI($url, $params=null, $headers=null, $ssl=true)
 {
   	$curl = curl_init();
 
-    $params = http_build_query($params);
+    //$params = http_build_query($params);
 
   	curl_setopt($curl,	CURLOPT_URL				, $url);
   	curl_setopt($curl,	CURLOPT_POST			, 1);

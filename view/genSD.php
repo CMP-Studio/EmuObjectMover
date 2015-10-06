@@ -45,7 +45,7 @@ function genSD($projectID)
     $fields = array("file" => '@' . $file);
     var_dump($file);
     $headers = array('Content-Type: multipart/form-data');
-    $res = postAPI($url, $fields, $headers, false);
+    $res = postAPI($url, $fields, $headers, false, false);
     var_dump("ATT:$res");
   }
   else {

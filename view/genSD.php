@@ -43,13 +43,13 @@ function genSD($projectID)
     $url = getSDBaseURL() . "sdpapi/request/$wo/attachment?OPERATION_NAME=ADD_ATTACHMENT&TECHNICIAN_KEY=$key";
 
     $fields = array("file" => '@' . $file);
-    var_dump($file);
+
     $headers = array('Content-Type: multipart/form-data');
     $res = postAPI($url, $fields, $headers, false, false);
-    var_dump("ATT:$res");
+
   }
   else {
-    var_dump("REQ:$res");
+
   }
 
 }

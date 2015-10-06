@@ -65,8 +65,6 @@ function postAPI($url, $params=null, $headers=null, $ssl=true, $parseVars = true
   		      return NULL;
       }
 
-      //For testing
-      var_dump(curl_getinfo ($curl, CURLINFO_HEADER_OUT));
 
   	curl_close($curl);
   	$data = json_decode($result);

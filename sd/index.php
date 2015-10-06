@@ -28,7 +28,7 @@ $input =
     </parameter>
     <parameter>
       <name>Subject</name>
-      <value>API Test Part 2</value>
+      <value>API Test Part 3</value>
     </parameter>
   </Details>
 </Operation>";

@@ -143,14 +143,15 @@ function genPDF($proj, $local = false)
     {
 
       $fname = $info['title'] . ".pdf";
-      $val = $pdf->Output($fname, "E");
+      $val = $pdf->Output($fname, "F");
       return $val;
     }
     else
     {
       header("Content-type: application/pdf");
-      $v = $pdf->Output( $info['title'] . ".pdf", "I");
-      print $v;
+      $pdfpath = filepath() . "/temp/" . $info['title'] . ".pdf";
+      $pdf->Output($pdfpath, "I");
+      return $pdfpath;
     }
 
 

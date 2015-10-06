@@ -146,7 +146,7 @@ function SDticket($project)
   $results = genSD($project);
   if(isset($results))
   {
-    $query = "UPDATE projects SET `servicedeskID` = " . sqlSafe($results['ID']) . " WHERE id = " . sqlSafe($project);
+    $query = "UPDATE projects SET `SDurl` = " . sqlSafe($results['url']) . " WHERE id = " . sqlSafe($project);
     writeQuery($query);
     print json_encode(array("url" => $results['url']));
   }

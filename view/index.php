@@ -121,7 +121,13 @@ else
 
         ?>
         <a id='downloadLink' href='viewAjax.php?action=pdf' download><button id='btnPDF' class="btn btn-success">Export to PDF</button></a>
+        <?php if(!empty($info["SDurl"]))
+        {
+          ?>
+          <a target='_blank' href="<?php print $info["SDurl"]; ?>">ServiceDesk Project</a>
+          <?php } else { ?>
         <button id='btnSD' class="btn btn-success">Create ServiceDesk Ticket</button>
+        <?php } ?>
         <form action='<?php print sitepath(); ?>add'>
           <button id='btnAdd' type="submit" class="btn btn-info">Add Objects</button>
         </form>

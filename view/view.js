@@ -193,8 +193,8 @@ $(document).ready(function()
 		$.getJSON(url).done(function(data)
 		{
 			var url = data.url;
-			$("#projButtons").append("<a href='" + url + "'>ServiceDesk Project</a>");
-
+			$("#projButtons").append("<a target='_blank' href='" + url + "'>ServiceDesk Project</a>");
+			$("#btnSD").hide();
 		});
 	}
 

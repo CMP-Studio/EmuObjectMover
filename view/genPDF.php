@@ -151,7 +151,7 @@ function genPDF($proj, $local = false)
     {
       header("Content-type: application/pdf");
 
-      $val = $pdf->Output( $info['title'] . "--" . date("Y-m-d")  . ".pdf", "I");
+      $val = $pdf->Output( $info['title'] . "-" . date("Y-m-d")  . ".pdf", "I");
       print $val;
     }
 

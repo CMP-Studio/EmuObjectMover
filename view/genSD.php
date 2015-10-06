@@ -54,7 +54,7 @@ function genSD($projectID)
         //complete
       }
     }
-    return  array('url' => getSDBaseURL() . "/WorkOrder.do?woMode=viewWO&woID=$wo", 'ID' => $wo);
+    return  array('url' => getSDBaseURL() . "WorkOrder.do?woMode=viewWO&woID=$wo", 'ID' => $wo);
   }
   else {
     return null;

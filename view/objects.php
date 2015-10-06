@@ -25,7 +25,7 @@ function getProjectID($hash)
 
 function getProjectInfo($id)
 {
-	$query = "SELECT p.id, p.duedate, p.title, p.notes, a.fullname as name, p.moveto FROM projects p LEFT JOIN accounts a on (a.id = p.account_id) WHERE p.id = " . sqlSafe($id);
+	$query = "SELECT p.id, p.duedate, p.title, p.notes, a.fullname as name, p.moveto, p.servicedeskID as sdid FROM projects p LEFT JOIN accounts a on (a.id = p.account_id) WHERE p.id = " . sqlSafe($id);
 
 		$result = readQuery($query);
 
@@ -55,7 +55,7 @@ function generateObjectRows($id)
 
 function generatePDFcells($id)
 {
-	$query = "SELECT object_irn as irn FROM 
+	$query = "SELECT object_irn as irn FROM
 objectProject op
 LEFT JOIN objects o on (o.irn = op.object_irn)
  WHERE op.project_id =  " . sqlSafe($id) . " order by location_name, accession_no";
@@ -72,7 +72,7 @@ LEFT JOIN objects o on (o.irn = op.object_irn)
 
 function generatePDFrow($irn)
 {
-	
+
 
 	$sirn = sqlSafe($irn);
 	$query = "SELECT location_name, location_barcode, image_url, title, year, accession_no, medium, barcode, notes FROM objects WHERE irn=$sirn";
@@ -112,7 +112,7 @@ function generatePDFrow($irn)
 
 
 	//Object
-	
+
 
 	$html = '';
 	$html .= "\n<table class=\"noborder\" summary=\"Alignment Table\">
@@ -126,7 +126,7 @@ function generatePDFrow($irn)
 	}
 
 	$html .= "\n\t\t\t</td>";
-	
+
 
 	$html .= "\n\t\t<td class=\"obj-txt\">";
 	$html .= "<p>";
@@ -182,19 +182,19 @@ function generatePDFrow($irn)
 			$html .= " D: " . $m['depth'] . " in.";
 		}
 		$html .= "</span><br>";
-		
+
 	}
 
 	if(!empty($notes))
 	{
 		$html .= "<span class=\"yellow\">$notes</span><br>";
 	}
-	
+
 	$html .= "\n\t\t</p>$obarcode</td>";
 	$html .= "</tr></table>";
 
 
-	
+
 	if(count($children) >= 1)
 	{
 		$html .= "\n\t\t<p class=\"tbl-spacing\"> </p><table summary=\"Children of $titlealt\"class=\"obj-parts\">";
@@ -203,7 +203,7 @@ function generatePDFrow($irn)
 		$html .= "\n\t\t\t\t<th>Parts<br></th>";
 		$html .= "\n\t\t\t</tr>";
 
-		foreach ($children as $key => $c) 
+		foreach ($children as $key => $c)
 		{
 			$bcode = generateBarcode($c['barcode']);
 			$lbcode = generateBarcode($c['location_barcode']);
@@ -227,7 +227,7 @@ function generatePDFrow($irn)
 		$html .= "\n\t\t</table>";
 
 	}
-	
+
 	$cells[] = $html;
 
 	$html = '';
@@ -242,7 +242,7 @@ function generatePDFrow($irn)
 	$html .= "\n\t\t\tShlf / Drwr / Rack: <input type=\"text\" size=\"8\" width=\"40\" name=\"$irn-e\" value=\"\" /><br>";
 	$html .= "\n\t\t\tOther:<br><textarea cols=\"25\" rows=\"2\" name=\"$irn-f\"></textarea>";
 	$html .= "</form></p>";
-	
+
 	$cells[] = $html;
 
 	$html = '';
@@ -317,7 +317,7 @@ function generateObjectRow($irn)
 		$img = $info['image_url'];
 		$html .= "\n\t\t<td class=\"obj-img\"><img src=\"$img\" width=\"$iw\" alt=\"$titlealt\"/></td>";
 	}
-	
+
 
 	$html .= "\n\t\t<td class=\"obj-txt\">";
 	$html .= "\n\t\t\t<p><span class=\"obj-title\">$title,</span> <span class=\"obj-year\">$year</span></p>";
@@ -372,14 +372,14 @@ function generateObjectRow($irn)
 			$html .= " D: " . $m['depth'] . " in.";
 		}
 		$html .= "</p>";
-		
+
 	}
 	$html .= "\n\t\t\t$obarcode";
 	$html .= "\n\t\t</td>";
 	$html .= "</tr></table>";
 
 
-	
+
 	if(count($children) >= 1)
 	{
 		$html .= "\n\t\t<table summary=\"Children of $titlealt\"class=\"obj-parts\">";
@@ -388,7 +388,7 @@ function generateObjectRow($irn)
 		$html .= "\n\t\t\t\t<th>Parts</th>";
 		$html .= "\n\t\t\t</tr>";
 
-		foreach ($children as $key => $c) 
+		foreach ($children as $key => $c)
 		{
 			$bcode = generateBarcode($c['barcode']);
 			$lbcode = generateBarcode($c['location_barcode']);
@@ -412,7 +412,7 @@ function generateObjectRow($irn)
 		$html .= "\n\t\t</table>";
 
 	}
-	
+
 	$html .= "\n\t</td>";
 
 	//Specific Location

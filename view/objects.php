@@ -25,7 +25,7 @@ function getProjectID($hash)
 
 function getProjectInfo($id)
 {
-	$query = "SELECT p.id, p.duedate, p.title, p.notes, a.fullname as name, p.moveto, p.SDurl FROM projects p LEFT JOIN accounts a on (a.id = p.account_id) WHERE p.id = " . sqlSafe($id);
+	$query = "SELECT p.id, p.duedate, p.title, p.notes, a.fullname as name, p.moveto, p.sdurl, a.email FROM projects p LEFT JOIN accounts a on (a.id = p.account_id) WHERE p.id = " . sqlSafe($id) ;
 
 		$result = readQuery($query);
 
@@ -35,6 +35,8 @@ function getProjectInfo($id)
 		{
 			$return = $row;
 		}
+		//var_dump($query . " = ");
+		//var_dump($return);
 
 		return $return;
 }

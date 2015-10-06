@@ -18,6 +18,7 @@ function genSD($projectID)
 
   $xml .= addParam("requesttemplate","API");
   $xml .= addParam("requester",$info["name"]);
+  $xml .= addParam("email",$info["email"]);
   $xml .= addParam("subject",$info["title"]);
   $xml .= addParam("description",$info["notes"]);
 

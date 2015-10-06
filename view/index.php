@@ -44,6 +44,7 @@ else
 <html>
   <head>
     <?php
+
       head();
     ?>
     <script type="text/javascript" src="view.js"></script>
@@ -121,10 +122,10 @@ else
 
         ?>
         <a id='downloadLink' href='viewAjax.php?action=pdf' download><button id='btnPDF' class="btn btn-success">Export to PDF</button></a>
-        <?php if(!empty($info["SDurl"]))
+        <?php if(isset($info["sdurl"]))
         {
           ?>
-          <a target='_blank' href="<?php print $info["SDurl"]; ?>">ServiceDesk Project</a>
+          <a target='_blank' href="<?php print $info["sdurl"]; ?>">ServiceDesk Project</a>
           <?php } else { ?>
         <button id='btnSD' class="btn btn-success">Create ServiceDesk Ticket</button>
         <?php } ?>

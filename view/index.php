@@ -127,7 +127,7 @@ else
           ?>
           <a target='_blank' href="<?php print $info["sdurl"]; ?>">ServiceDesk Project</a>
           <?php } else { ?>
-        <button id='btnSD' class="btn btn-success">Create ServiceDesk Ticket</button>
+      <!--  <button id='btnSD' class="btn btn-success">Create ServiceDesk Ticket</button> -->
         <?php } ?>
         <form action='<?php print sitepath(); ?>add'>
           <button id='btnAdd' type="submit" class="btn btn-info">Add Objects</button>

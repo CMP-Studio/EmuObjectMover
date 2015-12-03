@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../config.php";
 
-function topbar($title = "Emu mover", $project = false)
+function topbar($title = "EMuver", $project = false)
 {
 
    ?>
@@ -24,22 +24,22 @@ function topbar($title = "Emu mover", $project = false)
       </ul >
       <ul class="nav navbar-nav navbar-center">
           <li><h3 id='topbar-title'>
-          <?php 
+          <?php
           if($project)
           {
             print "<a href='" . sitepath() . "view'>" . $title . "</a>";
           }
           else
           {
-            print $title; 
+            print $title;
           }?>
           </h3></li>
       </ul>
-      
+
       <form class="navbar-form navbar-right" method="post" action="<?php print sitepath(); ?>">
        <button type="submit" name="logout"  class="btn btn-warning">Logout</button>
       </form>
-      
+
 
 
     </div>

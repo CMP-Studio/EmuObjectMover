@@ -2,14 +2,14 @@
 require_once __DIR__ . "/../config.php";
 require_once __DIR__ . "/sql.php";
 
-$timeout = 30*60;
+$timeout = 5*60*60;
 
 function authorize($email)
 {
 	$query = "SELECT * FROM accounts WHERE email = " . sqlSafe($email);
 
 	$result = readQuery($query);
-	while ($row = $result->fetch_assoc()) 
+	while ($row = $result->fetch_assoc())
 	{
 		$_SESSION["auth_account_id"] = $row["id"];
 		$_SESSION["auth_active_time"] = date("Y-m-d H:i:s");

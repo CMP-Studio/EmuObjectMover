@@ -28,13 +28,18 @@ if(!isset($_GET['irn']))
   $errors = array("source"=>"main","error"=>"IRN not set, exiting");
   throwError($errors);
 }
-
-
+if(!checkAuth())
+{
+  $errors = array("source"=>"main","error"=>"Account timeout");
+  throwError($errors);
+}
 
 $action = $_GET['action'];
 
 switch($action)
 {
+
+
   case 'check':
     checkInProject();
     break;
